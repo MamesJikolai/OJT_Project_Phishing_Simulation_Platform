@@ -69,7 +69,7 @@ function Sidebar() {
             <div>
                 {/* logo */}
                 <Link
-                    to="/"
+                    to="/dashboard"
                     className="flex flex-row items-center gap-2 pl-4 py-4"
                 >
                     <img src={logo} alt="Logo" className="w-20 h-20" />
