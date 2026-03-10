@@ -52,7 +52,10 @@ function Campaigns() {
         <div className="flex flex-col items-start m-8">
             <SearchBar />
             <Message text="Campaigns" />
-            <DefaultButton label="Create Campaign" customCSS="mb-[16px]" />
+            <DefaultButton
+                label="Create Campaign"
+                customCSS="mb-[16px] mt-[16px]"
+            />
             <BasicTable data={data} columns={columns} />
         </div>
     )

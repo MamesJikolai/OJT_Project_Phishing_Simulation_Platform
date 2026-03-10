@@ -11,14 +11,19 @@ import Analytics from './pages/Analytics.tsx'
 import Notifications from './pages/Notifications.tsx'
 import Account from './pages/Account.tsx'
 import Users from './pages/Users.tsx'
+import LogIn from './pages/LogIn.tsx'
 
 const router = createBrowserRouter([
+    {
+        path: '/', // LogIn is now the default root page
+        element: <LogIn />,
+    },
     {
         path: '/',
         element: <Layout />,
         children: [
             {
-                path: '',
+                path: '/dashboard',
                 element: <Dashboard />,
             },
             {
@@ -38,7 +43,7 @@ const router = createBrowserRouter([
                 element: <Analytics />,
             },
             {
-                path: '/Achievements',
+                path: '/achievements',
                 element: <Achievements />,
             },
             {

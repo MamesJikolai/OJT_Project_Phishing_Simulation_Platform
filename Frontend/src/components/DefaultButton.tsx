@@ -7,7 +7,7 @@ interface DefaultButtonProps {
 function DefaultButton({ label, onClick, customCSS }: DefaultButtonProps) {
     return (
         <button
-            className={`text-[#F8F9FA] bg-[#024C89] hover:bg-[#3572A1] rounded-[8px] mt-[16px] px-[16px] py-[4px] cursor-pointer ${customCSS}`}
+            className={`text-[#F8F9FA] bg-[#024C89] hover:bg-[#3572A1] rounded-[8px] px-[16px] py-[4px] cursor-pointer ${customCSS}`}
             onClick={onClick}
         >
             {label}

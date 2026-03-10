@@ -6,7 +6,7 @@ import { Icons } from '../assets/icons.ts'
 const navLinksTop = [
     {
         title: 'Dashboard',
-        link: '/',
+        link: '/dashboard',
         href: Icons.dashboard,
         hrefActive: Icons.dashboardActive,
     },

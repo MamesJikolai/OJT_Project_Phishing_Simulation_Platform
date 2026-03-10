@@ -4,7 +4,7 @@ import SearchBar from '../components/SearchBar.tsx'
 import { courseList } from '../assets/courses.ts'
 
 import { useMemo } from 'react'
-import DefaultButton from '../components/DefaultButton.tsx'
+import NavigateButton from '../components/NavigateButton.tsx'
 import useMockData from '../hook/useMockData.ts'
 import BasicTable from '../components/BasicTable.tsx'
 import type { ColumnDef } from '@tanstack/react-table'
@@ -58,7 +58,11 @@ function Dashboard() {
                     <CourseCard title={item.title} caption={item.caption} />
                 ))}
             </div>
-            <DefaultButton label="View All" customCSS="mb-[32px]" />
+            <NavigateButton
+                label="View All"
+                href="/courses"
+                customCSS="mb-[32px]"
+            />
 
             <h2>Analytics</h2>
             <div className="flex w-full justify-evenly gap-4">
@@ -67,7 +71,11 @@ function Dashboard() {
                 <div className="bg-red-200 w-[300px] h-[300px]"></div>
                 <div className="bg-red-200 w-[300px] h-[300px]"></div>
             </div>
-            <DefaultButton label="View All" customCSS="mb-[32px]" />
+            <NavigateButton
+                label="View All"
+                href="/analytics"
+                customCSS="mb-[32px]"
+            />
 
             <h2>Campaign</h2>
             {error ? (
@@ -77,7 +85,11 @@ function Dashboard() {
             ) : (
                 <BasicTable data={data.slice(0, 5)} columns={columns} />
             )}
-            <DefaultButton label="View All" customCSS="mb-[32px]" />
+            <NavigateButton
+                label="View All"
+                href="/campaigns"
+                customCSS="mb-[32px]"
+            />
         </div>
     )
 }
