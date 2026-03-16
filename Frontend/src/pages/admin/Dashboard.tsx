@@ -21,7 +21,7 @@ function Dashboard() {
     const { data, error } = useMockData<Campaign>()
 
     // Define table columns to pass into table
-    const columns = useMemo<ColumnDef<Campaign>[]>(
+    const columns = useMemo<ColumnDef<Campaign, unknown>[]>(
         () => [
             {
                 accessorKey: 'name', // Accessor key for the "name" field from data object
