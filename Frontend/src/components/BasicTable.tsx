@@ -11,7 +11,7 @@ interface BasicTableProps<TData> {
 }
 
 function BasicTable<TData>({ data, columns }: BasicTableProps<TData>) {
-    const table = useReactTable({
+    const table = useReactTable<TData>({
         data,
         columns,
         getCoreRowModel: getCoreRowModel(),

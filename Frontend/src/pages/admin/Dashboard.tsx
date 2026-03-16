@@ -8,14 +8,7 @@ import NavigateButton from '../../components/NavigateButton.tsx'
 import useMockData from '../../hook/useMockData.ts'
 import BasicTable from '../../components/BasicTable.tsx'
 import type { ColumnDef } from '@tanstack/react-table'
-
-type Campaign = {
-    name: string
-    status: string
-    target: string
-    date: string
-    completion: string
-}
+import type { Campaign } from './Campaigns.tsx'
 
 function Dashboard() {
     const { data, error } = useMockData<Campaign>()
