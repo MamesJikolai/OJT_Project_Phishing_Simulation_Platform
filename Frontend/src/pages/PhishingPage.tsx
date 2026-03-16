@@ -24,7 +24,7 @@ function PhishingPage() {
 
     const handleNavigate = () => {
         localStorage.removeItem('userRole')
-        window.location.href = '/'
+        window.location.href = '/home'
     }
 
     return (

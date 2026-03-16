@@ -3,7 +3,7 @@ import SearchBar from '../../components/SearchBar.tsx'
 import CampaignModal from '../../components/CampaignModal.tsx' // Updated import
 import DefaultButton from '../../components/DefaultButton.tsx'
 
-import { useMemo, useState, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import useMockData from '../../hook/useMockData.ts'
 import BasicTable from '../../components/BasicTable.tsx'
 import type { ColumnDef } from '@tanstack/react-table'
@@ -76,46 +76,43 @@ function Campaigns() {
     }
 
     // Define table columns
-    const columns = useMemo<ColumnDef<Campaign>[]>(
-        () => [
-            { accessorKey: 'name', header: 'Name' },
-            { accessorKey: 'status', header: 'Status' },
-            { accessorKey: 'target', header: 'Target' },
-            { accessorKey: 'date', header: 'Date' },
-            { accessorKey: 'completion', header: 'Completion' },
-            {
-                id: 'actions',
-                header: 'Actions',
-                cell: (info) => {
-                    const campaignData = info.row.original
+    const columns: ColumnDef<Campaign>[] = [
+        { accessorKey: 'name', header: 'Name' },
+        { accessorKey: 'status', header: 'Status' },
+        { accessorKey: 'target', header: 'Target' },
+        { accessorKey: 'date', header: 'Date' },
+        { accessorKey: 'completion', header: 'Completion' },
+        {
+            id: 'actions',
+            header: 'Actions',
+            cell: (info) => {
+                const campaignData = info.row.original
 
-                    return (
-                        <div className="flex flex-row gap-2">
-                            <button
-                                onClick={() => openViewModal(campaignData)}
-                                className="hover:text-[#17A2B8] text-[#4ECFE0] font-bold cursor-pointer"
-                            >
-                                View
-                            </button>
-                            <button
-                                onClick={() => openEditModal(campaignData)}
-                                className="hover:text-[#28A745] text-[#45C664] font-bold cursor-pointer"
-                            >
-                                Edit
-                            </button>
-                            <button
-                                onClick={() => deleteRowData(campaignData)}
-                                className="hover:text-[#DC3545] text-[#FF6B6B] font-bold cursor-pointer"
-                            >
-                                Delete
-                            </button>
-                        </div>
-                    )
-                },
+                return (
+                    <div className="flex flex-row gap-2">
+                        <button
+                            onClick={() => openViewModal(campaignData)}
+                            className="hover:text-[#17A2B8] text-[#4ECFE0] font-bold cursor-pointer"
+                        >
+                            View
+                        </button>
+                        <button
+                            onClick={() => openEditModal(campaignData)}
+                            className="hover:text-[#28A745] text-[#45C664] font-bold cursor-pointer"
+                        >
+                            Edit
+                        </button>
+                        <button
+                            onClick={() => deleteRowData(campaignData)}
+                            className="hover:text-[#DC3545] text-[#FF6B6B] font-bold cursor-pointer"
+                        >
+                            Delete
+                        </button>
+                    </div>
+                )
             },
-        ],
-        [openViewModal, openEditModal, deleteRowData]
-    )
+        },
+    ]
 
     if (error) return <div>{error}</div>
     if (data.length === 0) return <div>Loading...</div>
