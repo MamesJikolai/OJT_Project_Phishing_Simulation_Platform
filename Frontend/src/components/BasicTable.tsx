@@ -7,7 +7,7 @@ import type { ColumnDef } from '@tanstack/react-table'
 
 interface BasicTableProps<TData> {
     data: TData[]
-    columns: ColumnDef<TData>[]
+    columns: ColumnDef<any, any>[]
 }
 
 function BasicTable<TData>({ data, columns }: BasicTableProps<TData>) {
