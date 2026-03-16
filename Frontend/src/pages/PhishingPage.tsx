@@ -1,4 +1,27 @@
+import { useEffect } from 'react'
+
+// testing hash
+const tempUser = [
+    {
+        id: 1,
+        name: 'James Mikolai Salazar',
+        email: 'jmsalazar@mymail.mapua.edu.ph',
+        nameHash: '333ed8ce347a9e5c8d12912eb1d8f68e',
+        time: '',
+    },
+]
+
 function PhishingPage() {
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search)
+        const userHash = params.get('id')
+        const user = tempUser.find((u) => u.nameHash === userHash)
+
+        if (user) {
+            console.log(user.name, 'has clicked the link!')
+        }
+    })
+
     const handleNavigate = () => {
         localStorage.removeItem('userRole')
         window.location.href = '/'

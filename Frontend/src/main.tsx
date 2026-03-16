@@ -26,7 +26,7 @@ const router = createBrowserRouter([
                 element: <LogIn />,
             },
             {
-                path: '/phishing',
+                index: true,
                 element: <PhishingPage />,
             },
         ],
@@ -36,7 +36,7 @@ const router = createBrowserRouter([
         element: <Layout />,
         children: [
             {
-                index: true,
+                path: '/home',
                 element: <Home />,
             },
             {
