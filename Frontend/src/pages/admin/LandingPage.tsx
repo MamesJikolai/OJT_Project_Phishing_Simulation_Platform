@@ -101,7 +101,10 @@ function LandingPage() {
                         required
                         className="w-full"
                     />
-                    <DefaultButton type="submit" className="self-center mt-4">
+                    <DefaultButton
+                        type="submit"
+                        className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA] self-center mt-4"
+                    >
                         Save
                     </DefaultButton>
                 </form>

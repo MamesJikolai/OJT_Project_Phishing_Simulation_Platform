@@ -64,7 +64,7 @@ const navLinksBottom = [
 
 function AdminSidebar() {
     const handleLogout = () => {
-        localStorage.removeItem('userRole')
+        localStorage.removeItem('userId')
         window.location.href = '/home'
     }
 

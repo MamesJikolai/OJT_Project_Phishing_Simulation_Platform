@@ -98,7 +98,7 @@ function Account() {
                     <DefaultButton
                         children="Sign Out"
                         onClick={handleLogout}
-                        className="bg-[#DC3545]"
+                        className="bg-[#DC3545] hover:bg-[#FF6B6B] text-[#F8F9FA]"
                     />
                 </form>
             </div>

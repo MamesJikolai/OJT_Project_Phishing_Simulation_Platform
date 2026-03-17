@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import DefaultButton from '../components/DefaultButton'
 
 // testing hash
 const tempUser = [
@@ -71,12 +72,11 @@ function PhishingPage({
             {displayTemplate.message2 && (
                 <p className="text-sm">{displayTemplate.message2}</p>
             )}
-            <button
+            <DefaultButton
+                children={displayTemplate.buttonText}
                 onClick={handleNavigate}
-                className="text-[#FFFAFA] bg-[#024C89] hover:bg-[#3572A1] px-4 py-2 cursor-pointer rounded"
-            >
-                {displayTemplate.buttonText}
-            </button>
+                className="text-[#FFFAFA] bg-[#024C89] hover:bg-[#3572A1]"
+            />
         </div>
     )
 }

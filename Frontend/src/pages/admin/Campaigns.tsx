@@ -122,7 +122,7 @@ function Campaigns() {
 
             {/* The Create button now lives here, passing control to the states */}
             <DefaultButton
-                className="mb-[16px] mt-[16px]"
+                className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA] mb-[16px] mt-[16px]"
                 onClick={openCreateModal}
                 children="Create Campaign"
             />

@@ -161,7 +161,10 @@ function CampaignModal({
 
                 {/* Hide the submit button completely if we are just viewing */}
                 {!isViewOnly && (
-                    <DefaultButton type="submit" className="self-center mt-4">
+                    <DefaultButton
+                        type="submit"
+                        className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA] self-center mt-4"
+                    >
                         {mode === 'create' ? 'Create' : 'Save Changes'}
                     </DefaultButton>
                 )}
