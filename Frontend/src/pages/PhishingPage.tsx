@@ -11,9 +11,22 @@ const tempUser = [
     },
 ]
 
-function PhishingPage() {
+interface TemplateProps {
+    title: string
+    message1: string
+    message2: string
+    buttonText: string
+}
+
+function PhishingPage({
+    previewTemplate,
+}: {
+    previewTemplate?: TemplateProps
+}) {
     // Change to DB later
     const [template] = useState(() => {
+        if (previewTemplate) return previewTemplate
+
         const savedTemplate = localStorage.getItem('phishingTemplate')
 
         if (savedTemplate) {
@@ -46,23 +59,24 @@ function PhishingPage() {
         window.location.href = '/home'
     }
 
+    const displayTemplate = previewTemplate || template
+
     return (
-        <div className="flex flex-col justify-center items-center gap-4 h-screen bg-[#F8F9FA] px-4 text-center">
-            {/* 3. Render the state variables */}
-            <h1>{template.title}</h1>
-
-            <p>{template.message1}</p>
-
-            {/* Only render message 2 if it exists, since it wasn't strictly required in the form */}
-            {template.message2 && (
-                <p className="text-sm">{template.message2}</p>
+        <div
+            className={`flex flex-col justify-center items-center gap-4 bg-[#F8F9FA] px-4 text-center ${
+                previewTemplate ? 'h-full' : 'h-screen'
+            }`}
+        >
+            <h1>{displayTemplate.title}</h1>
+            <p>{displayTemplate.message1}</p>
+            {displayTemplate.message2 && (
+                <p className="text-sm">{displayTemplate.message2}</p>
             )}
-
             <button
                 onClick={handleNavigate}
                 className="text-[#FFFAFA] bg-[#024C89] hover:bg-[#3572A1] px-4 py-2 cursor-pointer rounded"
             >
-                {template.buttonText}
+                {displayTemplate.buttonText}
             </button>
         </div>
     )
