@@ -1,5 +1,5 @@
 import { users } from '../../assets/users'
-import BasicTable from '../BasicTable'
+import BasicTable from '../Tables/BasicTable'
 import type { ColumnDef } from '@tanstack/react-table'
 import DefaultButton from '../DefaultButton'
 

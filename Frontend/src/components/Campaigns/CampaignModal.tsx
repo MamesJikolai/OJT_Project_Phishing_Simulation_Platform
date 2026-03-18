@@ -8,7 +8,7 @@ import { useState } from 'react'
 interface CampaignModalProps {
     isOpen: boolean
     onClose: () => void
-    mode: 'create' | 'view' | 'edit'
+    mode: 'create' | 'edit'
     initialData?: Campaign | null
     onSave: (campaign: Campaign) => void
 }
@@ -20,8 +20,6 @@ function CampaignModal({
     initialData,
     onSave,
 }: CampaignModalProps) {
-    // 3. Initialize state directly with the props!
-    // If initialData is null (like in 'create' mode), it falls back to an empty string.
     const [name, setName] = useState(initialData?.name || '')
     const [status, setStatus] = useState(
         initialData?.status?.toLowerCase() || ''
@@ -31,10 +29,6 @@ function CampaignModal({
     const [subject, setSubject] = useState(initialData?.subject || '')
     const [body, setBody] = useState(initialData?.body || '')
     const [error, setError] = useState('')
-
-    const isViewOnly = mode === 'view'
-
-    // 4. We completely deleted the useEffect block!
 
     const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -82,7 +76,6 @@ function CampaignModal({
                 <h2>
                     {mode === 'create' && 'Create Campaign'}
                     {mode === 'edit' && 'Edit Campaign'}
-                    {mode === 'view' && 'Campaign Details'}
                 </h2>
 
                 {error && <p className="text-[#DC3545] text-sm m-0">{error}</p>}
@@ -95,7 +88,6 @@ function CampaignModal({
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     className="w-full"
-                    disabled={isViewOnly}
                 />
 
                 <label>
@@ -105,7 +97,6 @@ function CampaignModal({
                         name="status"
                         value={status}
                         onChange={(e) => setStatus(e.target.value)}
-                        disabled={isViewOnly}
                         className="text-[#4A4A4A] bg-#F8F9FA border-2 border-[#DDE2E5] focus:outline-[#024C89] active:outline-[#024C89] w-full max-w-2xl rounded-[16px] px-4 py-2 disabled:bg-gray-200 disabled:opacity-70"
                     >
                         <option value="" disabled hidden>
@@ -125,7 +116,6 @@ function CampaignModal({
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
                     className="w-full"
-                    disabled={isViewOnly}
                 />
 
                 <TextInput
@@ -135,7 +125,6 @@ function CampaignModal({
                     value={target}
                     onChange={(e) => setTarget(e.target.value)}
                     className="w-full"
-                    disabled={isViewOnly}
                 />
 
                 <TextInput
@@ -145,7 +134,6 @@ function CampaignModal({
                     value={subject}
                     onChange={(e) => setSubject(e.target.value)}
                     className="w-full"
-                    disabled={isViewOnly}
                 />
 
                 {/* Make sure TextField accepts 'disabled' */}
@@ -156,18 +144,14 @@ function CampaignModal({
                     onChange={(e) => setBody(e.target.value)}
                     className="w-full"
                     rows={6}
-                    disabled={isViewOnly}
                 />
 
-                {/* Hide the submit button completely if we are just viewing */}
-                {!isViewOnly && (
-                    <DefaultButton
-                        type="submit"
-                        className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA] self-center mt-4"
-                    >
-                        {mode === 'create' ? 'Create' : 'Save Changes'}
-                    </DefaultButton>
-                )}
+                <DefaultButton
+                    type="submit"
+                    className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA] self-center mt-4"
+                >
+                    {mode === 'create' ? 'Create' : 'Save Changes'}
+                </DefaultButton>
             </form>
         </div>
     )

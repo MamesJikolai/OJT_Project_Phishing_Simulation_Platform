@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom'
-import AdminSidebar from './components/AdminSidebar.tsx'
+import AdminSidebar from './components/Sidebar/AdminSidebar.tsx'
 
 function Layout() {
     return (

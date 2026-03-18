@@ -4,7 +4,7 @@ import DefaultButton from '../../components/DefaultButton.tsx'
 
 import { useState, useCallback } from 'react'
 import useMockData from '../../hook/useMockData.ts'
-import BasicTable from '../../components/BasicTable.tsx'
+import BasicTable from '../../components/Tables/BasicTable.tsx'
 import type { ColumnDef } from '@tanstack/react-table'
 
 export type Campaign = {
@@ -21,9 +21,7 @@ export type Campaign = {
 function Campaigns() {
     const { data, setData, error } = useMockData<Campaign>()
     const [isModalOpen, setIsModalOpen] = useState(false)
-    const [modalMode, setModalMode] = useState<'create' | 'view' | 'edit'>(
-        'create'
-    )
+    const [modalMode, setModalMode] = useState<'create' | 'edit'>('create')
     const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(
         null
     )
@@ -31,12 +29,6 @@ function Campaigns() {
     const openCreateModal = useCallback(() => {
         setModalMode('create')
         setSelectedCampaign(null)
-        setIsModalOpen(true)
-    }, [])
-
-    const openViewModal = useCallback((campaignData: Campaign) => {
-        setModalMode('view')
-        setSelectedCampaign(campaignData)
         setIsModalOpen(true)
     }, [])
 
@@ -59,6 +51,10 @@ function Campaigns() {
         },
         [setData]
     ) // setData goes in here because the function uses it
+
+    const handleLaunchCampaign = () => {
+        //
+    }
 
     const handleSaveCampaign = (savedCampaign: Campaign) => {
         if (modalMode === 'edit') {
@@ -88,16 +84,16 @@ function Campaigns() {
                 const campaignData = info.row.original
 
                 return (
-                    <div className="flex flex-row gap-2">
+                    <div className="flex flex-row gap-2 text-[12px]">
                         <button
-                            onClick={() => openViewModal(campaignData)}
-                            className="hover:text-[#17A2B8] text-[#4ECFE0] font-bold cursor-pointer"
+                            onClick={handleLaunchCampaign}
+                            className="text-[#F8F9FA] hover:bg-[#28A745] bg-[#45C664] px-2 rounded-md py-1 font-bold cursor-pointer"
                         >
-                            View
+                            ▶︎ Launch
                         </button>
                         <button
                             onClick={() => openEditModal(campaignData)}
-                            className="hover:text-[#28A745] text-[#45C664] font-bold cursor-pointer"
+                            className="hover:text-[#17A2B8] text-[#4ECFE0] font-bold cursor-pointer"
                         >
                             Edit
                         </button>

@@ -5,7 +5,7 @@ import { courseList } from '../../assets/courses.ts'
 import { useMemo } from 'react'
 import NavigateButton from '../../components/NavigateButton.tsx'
 import useMockData from '../../hook/useMockData.ts'
-import BasicTable from '../../components/BasicTable.tsx'
+import BasicTable from '../../components/Tables/BasicTable.tsx'
 import type { ColumnDef } from '@tanstack/react-table'
 import type { Campaign } from './Campaigns.tsx'
 
