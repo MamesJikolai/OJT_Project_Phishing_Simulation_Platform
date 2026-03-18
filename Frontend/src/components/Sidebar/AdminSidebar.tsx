@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import MenuItem from './MenuItem.tsx'
-import { Icons } from '../assets/icons.ts'
+import { Icons } from '../../assets/icons.ts'
 
 const navLinksTop = [
     {
