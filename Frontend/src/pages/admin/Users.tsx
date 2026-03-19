@@ -13,10 +13,22 @@ export type Users = {
     emailStatus: string
     clicked: string
     training: string
-    score: string
+    score: number
 }
 
 function Users() {
+    const openEditModal = (userData: Users) => {
+        //
+    }
+    const deleteUser = (userData: Users) => {
+        const confirmDelete = window.confirm(
+            `Are you sure you want to delete "${userData.name}"?`
+        )
+        if (confirmDelete) {
+            //
+        }
+    }
+
     const columns = useMemo<ColumnDef<Users, any>[]>(
         () => [
             { accessorKey: 'name', header: 'Name' },
@@ -31,7 +43,11 @@ function Users() {
                 header: 'Campaign',
                 meta: { filterVariant: 'select' },
             },
-            { accessorKey: 'emailStatus', header: 'Status' },
+            {
+                accessorKey: 'emailStatus',
+                header: 'Status',
+                meta: { filterVariant: 'select' },
+            },
             {
                 accessorKey: 'clicked',
                 header: 'Clicked?',
@@ -42,7 +58,36 @@ function Users() {
                 header: 'Training',
                 meta: { filterVariant: 'select' },
             },
-            { accessorKey: 'score', header: 'Score' },
+            {
+                accessorKey: 'score',
+                header: 'Score',
+                enableColumnFilter: false,
+            },
+            {
+                accessorKey: 'actions',
+                header: 'Actions',
+                enableColumnFilter: false,
+                cell: (info) => {
+                    const userData = info.row.original
+
+                    return (
+                        <div className="flex flex-row gap-2 text-[12px]">
+                            <button
+                                onClick={() => openEditModal(userData)}
+                                className="hover:text-[#17A2B8] text-[#4ECFE0] font-bold cursor-pointer"
+                            >
+                                Edit
+                            </button>
+                            <button
+                                onClick={() => deleteUser(userData)}
+                                className="hover:text-[#DC3545] text-[#FF6B6B] font-bold cursor-pointer"
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    )
+                },
+            },
         ],
         []
     )

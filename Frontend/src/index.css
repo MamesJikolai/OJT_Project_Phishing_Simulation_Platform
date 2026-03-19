@@ -29,11 +29,15 @@ table {
 th,
 td {
     border: 1px solid #4a4a4a;
-    padding: 8px;
     text-align: left;
 }
 
 th {
     background-color: #dde2e5;
     font-weight: bold;
+    padding: 8px;
+}
+
+td {
+    padding: 16px 8px 16px 8px;
 }

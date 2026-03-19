@@ -24,8 +24,12 @@ function Dashboard() {
             header: 'Target',
             meta: { filterVariant: 'select' },
         },
-        { accessorKey: 'date', header: 'Date' },
-        { accessorKey: 'completion', header: 'Completion' },
+        { accessorKey: 'date', header: 'Date', enableColumnFilter: false },
+        {
+            accessorKey: 'completion',
+            header: 'Completion',
+            enableColumnFilter: false,
+        },
     ]
 
     return (
