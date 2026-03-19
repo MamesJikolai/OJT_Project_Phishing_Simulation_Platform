@@ -29,6 +29,37 @@ function Dashboard() {
             accessorKey: 'completion',
             header: 'Completion',
             enableColumnFilter: false,
+            cell: (info) => {
+                // Since your data type is already a number, we can just grab it directly!
+                const numericValue = info.getValue() as number
+
+                // Optional: Change color based on progress (red for low, green for high)
+                let barColor = 'bg-[#28A745]' // Default Green
+                if (numericValue < 30) {
+                    barColor = 'bg-[#DC3545]' // Red for low completion
+                } else if (numericValue < 70) {
+                    barColor = 'bg-[#FFC107]' // Yellow for medium completion
+                }
+
+                return (
+                    <div className="w-full min-w-[120px] px-1 flex items-center gap-3">
+                        {/* Text Label (e.g., "65%") */}
+                        <span className="w-fit text-right text-xs font-bold text-gray-700">
+                            {numericValue}%
+                        </span>
+
+                        {/* The Gray Background Track */}
+                        <div className="flex-1 h-2.5 bg-gray-200 rounded-full overflow-hidden shadow-inner">
+                            {/* The Colored Progress Fill */}
+                            <div
+                                className={`h-full ${barColor} rounded-full transition-all duration-700 ease-out`}
+                                // The inline style sets the exact width dynamically
+                                style={{ width: `${numericValue}%` }}
+                            />
+                        </div>
+                    </div>
+                )
+            },
         },
     ]
 
