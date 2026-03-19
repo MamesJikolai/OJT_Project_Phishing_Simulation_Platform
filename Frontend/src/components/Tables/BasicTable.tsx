@@ -1,9 +1,20 @@
 import {
-    useReactTable,
-    getCoreRowModel,
     flexRender,
+    getCoreRowModel,
+    getFacetedMinMaxValues,
+    getFacetedRowModel,
+    getFacetedUniqueValues,
+    getFilteredRowModel,
+    getPaginationRowModel,
+    getSortedRowModel,
+    useReactTable,
 } from '@tanstack/react-table'
-import type { ColumnDef } from '@tanstack/react-table'
+import type {
+    ColumnDef,
+    Column,
+    ColumnFiltersState,
+    RowData,
+} from '@tanstack/react-table'
 import getCellClasses from './getCellClasses'
 
 interface BasicTableProps<TData> {

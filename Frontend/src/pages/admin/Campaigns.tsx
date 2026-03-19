@@ -1,12 +1,11 @@
+import { useState, useCallback } from 'react'
+import type { ColumnDef } from '@tanstack/react-table'
+import { accounts } from '../../assets/dummydata/accounts.ts'
+import { campaigns } from '../../assets/dummydata/campaigns.ts'
 import Message from '../../components/Message.tsx'
 import CampaignModal from '../../components/Campaigns/CampaignModal.tsx'
 import DefaultButton from '../../components/DefaultButton.tsx'
-
-import { useState, useCallback } from 'react'
-import useMockData from '../../hook/useMockData.ts'
-import BasicTable from '../../components/Tables/BasicTable.tsx'
-import type { ColumnDef } from '@tanstack/react-table'
-import { accounts } from '../../assets/dummydata/accounts.ts'
+import TableComponent from '../../components/Tables/TableComponent.tsx'
 
 export type Campaign = {
     id: number
@@ -23,7 +22,9 @@ function Campaigns() {
     const userId = localStorage.getItem('userId')
     const currentUser = accounts.find((u) => u.id === Number(userId))
     const userRole = currentUser?.role || ''
-    const { data, setData, error } = useMockData<Campaign>()
+
+    const [data, setData] = useState<Campaign[]>(campaigns)
+
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [modalMode, setModalMode] = useState<'create' | 'edit'>('create')
     const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(
@@ -77,8 +78,16 @@ function Campaigns() {
     // Define table columns
     const columns: ColumnDef<Campaign, any>[] = [
         { accessorKey: 'name', header: 'Name' },
-        { accessorKey: 'status', header: 'Status' },
-        { accessorKey: 'target', header: 'Target' },
+        {
+            accessorKey: 'status',
+            header: 'Status',
+            meta: { filterVariant: 'select' },
+        },
+        {
+            accessorKey: 'target',
+            header: 'Target',
+            meta: { filterVariant: 'select' },
+        },
         { accessorKey: 'date', header: 'Date' },
         { accessorKey: 'completion', header: 'Completion' },
         {
@@ -91,7 +100,7 @@ function Campaigns() {
                     <div className="flex flex-row gap-2 text-[12px]">
                         <button
                             onClick={handleLaunchCampaign}
-                            className="text-[#F8F9FA] hover:bg-[#28A745] bg-[#45C664] px-2 rounded-md py-1 font-bold cursor-pointer"
+                            className="text-[#F8F9FA] hover:bg-[#45C664] bg-[#28A745] px-2 rounded-md py-1 font-bold cursor-pointer"
                         >
                             ▶︎ Launch
                         </button>
@@ -118,26 +127,19 @@ function Campaigns() {
             ? columns.filter((col) => col.id !== 'actions')
             : columns
 
-    if (error) return <div>{error}</div>
-    if (data.length === 0) return <div>Loading...</div>
-
     return (
         <div className="flex flex-col items-start m-8">
             <Message text="Campaigns" />
 
             {userRole !== 'hr' && (
                 <DefaultButton
-                    className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA] mb-[16px] mt-[16px]"
+                    className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA] mb-4"
                     onClick={openCreateModal}
                     children="Create Campaign"
                 />
             )}
 
-            <BasicTable
-                data={data}
-                columns={visibleColumns}
-                tableStyle="w-full"
-            />
+            <TableComponent data={data} columns={visibleColumns} />
 
             {isModalOpen && (
                 <CampaignModal

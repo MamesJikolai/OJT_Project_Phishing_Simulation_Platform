@@ -1,43 +1,32 @@
+import { useState } from 'react'
 import CourseCard from '../../components/CourseCard.tsx'
 import Message from '../../components/Message.tsx'
-import { courseList } from '../../assets/dummydata/courses.ts'
-
-import { useMemo } from 'react'
 import NavigateButton from '../../components/NavigateButton.tsx'
-import useMockData from '../../hook/useMockData.ts'
-import BasicTable from '../../components/Tables/BasicTable.tsx'
 import type { ColumnDef } from '@tanstack/react-table'
 import type { Campaign } from './Campaigns.tsx'
+import TableComponent from '../../components/Tables/TableComponent.tsx'
+import { courseList } from '../../assets/dummydata/courses.ts'
+import { campaigns } from '../../assets/dummydata/campaigns.ts'
 
 function Dashboard() {
-    const { data, error } = useMockData<Campaign>()
+    const [data, error] = useState<Campaign[]>(campaigns)
 
     // Define table columns to pass into table
-    const columns = useMemo<ColumnDef<Campaign, any>[]>(
-        () => [
-            {
-                accessorKey: 'name', // Accessor key for the "name" field from data object
-                header: 'Name', // Column header
-            },
-            {
-                accessorKey: 'status', // Accessor key for the "name" field from data object
-                header: 'Status', // Column header
-            },
-            {
-                accessorKey: 'target', // Accessor key for the "name" field from data object
-                header: 'Target', // Column header
-            },
-            {
-                accessorKey: 'date', // Accessor key for the "name" field from data object
-                header: 'Date', // Column header
-            },
-            {
-                accessorKey: 'completion', // Accessor key for the "name" field from data object
-                header: 'Completion', // Column header
-            },
-        ],
-        []
-    )
+    const columns: ColumnDef<Campaign, any>[] = [
+        { accessorKey: 'name', header: 'Name' },
+        {
+            accessorKey: 'status',
+            header: 'Status',
+            meta: { filterVariant: 'select' },
+        },
+        {
+            accessorKey: 'target',
+            header: 'Target',
+            meta: { filterVariant: 'select' },
+        },
+        { accessorKey: 'date', header: 'Date' },
+        { accessorKey: 'completion', header: 'Completion' },
+    ]
 
     return (
         <div className="flex flex-col items-start p-8 overflow-x-hidden max-w-full">
@@ -74,13 +63,11 @@ function Dashboard() {
             />
 
             <h2>Campaign</h2>
-            {error ? (
-                <div>{error}</div>
-            ) : data.length === 0 ? (
-                <div>Loading...</div>
-            ) : (
-                <BasicTable data={data.slice(0, 5)} columns={columns} />
-            )}
+            <TableComponent
+                data={data.slice(0, 5)}
+                columns={columns}
+                isPaginated={false}
+            />
             <NavigateButton
                 label="View All"
                 href="/campaigns"

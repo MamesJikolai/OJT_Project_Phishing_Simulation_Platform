@@ -1,30 +1,29 @@
 export default function getCellClasses(cell: any) {
     const cellValue = String(cell.getValue()).toLowerCase()
+    const columnId = cell.column.id.toLowerCase()
 
-    if (cell.column.id.toLowerCase() === 'role') {
-        if (cellValue === 'admin') {
-            return 'text-[#00A3AD] font-bold'
-        } else if (cellValue === 'hr') {
-            return 'text-[#C5A059] font-bold'
-        }
-    } else if (cell.column.id.toLowerCase() === 'status') {
-        if (cellValue === 'completed') {
-            return 'text-[#28A745] font-bold'
-        } else if (cellValue === 'cancelled') {
-            return 'text-[#DC3545] font-bold'
-        } else if (cellValue === 'active') {
-            return 'text-[#17A2B8] font-bold'
-        } else if (cellValue === 'draft') {
-            return 'text-[#FFC107] font-bold'
-        }
-    } else if (cell.column.id.toLowerCase() === 'emailstatus') {
-        if (cellValue === 'sent') {
-            return 'text-[#28A745] font-bold'
-        } else if (cellValue === 'failed') {
-            return 'text-[#DC3545] font-bold'
-        }
+    const baseBadge =
+        'px-2 py-1 rounded-md w-fit whitespace-nowrap text-xs leading-none font-semibold'
+
+    if (columnId === 'role') {
+        if (cellValue === 'admin')
+            return `${baseBadge} bg-purple-100 text-purple-800`
+        if (cellValue === 'hr') return `${baseBadge} bg-blue-100 text-blue-800`
+    } else if (columnId === 'status') {
+        if (cellValue === 'completed')
+            return `${baseBadge} bg-green-100 text-green-800`
+        if (cellValue === 'cancelled')
+            return `${baseBadge} bg-red-100 text-red-800`
+        if (cellValue === 'active')
+            return `${baseBadge} bg-cyan-100 text-cyan-800`
+        if (cellValue === 'draft')
+            return `${baseBadge} bg-gray-100 text-gray-800`
+    } else if (columnId === 'emailstatus') {
+        if (cellValue === 'sent')
+            return `${baseBadge} bg-green-100 text-green-800`
+        if (cellValue === 'failed')
+            return `${baseBadge} bg-red-100 text-red-800`
     }
 
-    // Always return an empty string if no conditions are met
     return ''
 }

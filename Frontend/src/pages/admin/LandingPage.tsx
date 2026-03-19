@@ -53,10 +53,8 @@ function LandingPage() {
     }
 
     return (
-        <>
-            <div className="flex flex-col items-start m-8">
-                <Message text="Landing Page Content" />
-            </div>
+        <div className="flex flex-col items-start m-8">
+            <Message text="Landing Page Content" />
 
             <div className="flex justify-center gap-8 flex-wrap">
                 <form
@@ -125,7 +123,7 @@ function LandingPage() {
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     )
 }
 
