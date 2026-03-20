@@ -47,16 +47,22 @@ function Home() {
                     <Message text=" / Home" />
                 </div>
 
-                <div className="flex flex-row flex-wrap justify-center gap-[16px]">
-                    {data.map((item, index) => (
-                        <CourseCard
-                            title={item.title}
-                            caption={item.caption}
-                            key={index}
-                            customCSS="drop-shadow-md"
-                        />
-                    ))}
-                </div>
+                {isLoading ? (
+                    <div className="py-8 text-gray-500 animate-pulse">
+                        Loading Courses...
+                    </div>
+                ) : (
+                    <div className="flex flex-wrap justify-center w-full overflow-x-auto gap-4 pb-4">
+                        {data.map((item, index) => (
+                            <CourseCard
+                                title={item.title}
+                                caption={item.caption}
+                                key={index}
+                                customCSS="drop-shadow-md"
+                            />
+                        ))}
+                    </div>
+                )}
             </div>
         </>
     )

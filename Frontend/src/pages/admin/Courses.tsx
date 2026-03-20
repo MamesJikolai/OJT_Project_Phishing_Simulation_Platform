@@ -29,15 +29,21 @@ function Courses() {
             <Message text="Courses" />
 
             {/* Cards Container */}
-            <div className="flex flex-row flex-wrap justify-center gap-[32px] drop-shadow-md">
-                {data.map((item, index) => (
-                    <CourseCard
-                        title={item.title}
-                        caption={item.caption}
-                        key={index}
-                    />
-                ))}
-            </div>
+            {isLoading ? (
+                <div className="py-8 text-gray-500 animate-pulse">
+                    Loading Courses...
+                </div>
+            ) : (
+                <div className="flex flex-row flex-wrap justify-center gap-[32px] drop-shadow-md">
+                    {data.map((item, index) => (
+                        <CourseCard
+                            title={item.title}
+                            caption={item.caption}
+                            key={index}
+                        />
+                    ))}
+                </div>
+            )}
         </div>
     )
 }

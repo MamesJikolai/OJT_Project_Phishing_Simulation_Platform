@@ -1,13 +1,13 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState } from 'react'
 import type { ColumnDef } from '@tanstack/react-table'
 import DefaultButton from '../DefaultButton'
 import TableComponent from '../Tables/TableComponent'
-import type { Account } from '../../types/models'
+import type { Accounts } from '../../types/models'
 import { apiService } from '../../services/userService'
 import AdminUserModal from './AdminUsersModal'
 
 function AdminUsers() {
-    const [data, setData] = useState<Account[]>([])
+    const [data, setData] = useState<Accounts[]>([])
     const [isLoading, setIsLoading] = useState(true)
 
     const [isModalOpen, setIsModalOpen] = useState(false)
@@ -16,7 +16,8 @@ function AdminUsers() {
         const fetchAccount = async () => {
             try {
                 setIsLoading(true)
-                const fetchedData = await apiService.getAll<Account>('accounts')
+                const fetchedData =
+                    await apiService.getAll<Accounts>('accounts')
                 setData(fetchedData)
             } catch (err) {
                 console.error('Failed to load accounts:', err)
@@ -28,20 +29,20 @@ function AdminUsers() {
         fetchAccount()
     }, [])
 
-    const handleSaveAccount = async (accountData: Account) => {
+    const handleSaveAccount = async (accountData: Accounts) => {
         try {
-            const newAccount = await apiService.create<Account>(
+            const newAccount = await apiService.create<Accounts>(
                 'accounts',
                 accountData
             )
 
-            setData((prevData: Account[]) => [newAccount, ...prevData])
+            setData((prevData: Accounts[]) => [newAccount, ...prevData])
         } catch (err) {
             console.error('Failed to save account:', err)
         }
     }
 
-    const columns: ColumnDef<Account, any>[] = [
+    const columns: ColumnDef<Accounts, any>[] = [
         { accessorKey: 'username', header: 'Username' },
         { accessorKey: 'firstName', header: 'First Name' },
         { accessorKey: 'lastName', header: 'Last Name' },
@@ -66,7 +67,13 @@ function AdminUsers() {
                 />
             </div>
 
-            <TableComponent data={data} columns={columns} />
+            {isLoading ? (
+                <div className="py-8 text-gray-500 animate-pulse">
+                    Loading Admin Users...
+                </div>
+            ) : (
+                <TableComponent data={data} columns={columns} />
+            )}
 
             {isModalOpen && (
                 <AdminUserModal

@@ -4,14 +4,14 @@ import Message from '../../components/Message.tsx'
 import NavigateButton from '../../components/NavigateButton.tsx'
 import type { ColumnDef } from '@tanstack/react-table'
 import TableComponent from '../../components/Tables/TableComponent.tsx'
-import type { Courses } from '../../types/models.ts'
+import type { Course } from '../../types/models.ts'
 import type { Campaign } from '../../types/models.ts'
 import { apiService } from '../../services/userService.ts'
 
 function Dashboard() {
-    const [courseData, setCourseData] = useState<Courses[]>([])
+    const [courseData, setCourseData] = useState<Course[]>([])
     const [campaignData, setCampaignData] = useState<Campaign[]>([])
-    const [loading, setIsLoading] = useState(true)
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
         const fetchTemplate = async () => {
@@ -20,7 +20,7 @@ function Dashboard() {
                 const fetchedCampaignData =
                     await apiService.getAll<Campaign>('campaigns')
                 const fetchedCoursesData =
-                    await apiService.getAll<Courses>('courses')
+                    await apiService.getAll<Course>('courses')
                 setCampaignData(fetchedCampaignData)
                 setCourseData(fetchedCoursesData)
             } catch (err) {
@@ -89,16 +89,22 @@ function Dashboard() {
         <div className="flex flex-col items-start p-8 overflow-x-hidden max-w-full">
             <Message text="Dashboard" />
 
-            <h2>My Courses</h2>
-            <div className="flex justify-start w-full overflow-x-auto gap-4 pb-4">
-                {courseData.slice(0, 5).map((item, index) => (
-                    <CourseCard
-                        title={item.title}
-                        caption={item.caption}
-                        key={index}
-                    />
-                ))}
-            </div>
+            <h2>Courses</h2>
+            {isLoading ? (
+                <div className="py-8 text-gray-500 animate-pulse">
+                    Loading Courses...
+                </div>
+            ) : (
+                <div className="flex justify-start w-full overflow-x-auto gap-4 pb-4">
+                    {courseData.slice(0, 5).map((item, index) => (
+                        <CourseCard
+                            title={item.title}
+                            caption={item.caption}
+                            key={index}
+                        />
+                    ))}
+                </div>
+            )}
             <NavigateButton
                 label="View All"
                 href="/courses"
@@ -120,11 +126,17 @@ function Dashboard() {
             />
 
             <h2>Campaign</h2>
-            <TableComponent
-                data={campaignData.slice(0, 5)}
-                columns={columns}
-                isPaginated={false}
-            />
+            {isLoading ? (
+                <div className="py-8 text-gray-500 animate-pulse">
+                    Loading Campaigns...
+                </div>
+            ) : (
+                <TableComponent
+                    data={campaignData.slice(0, 5)}
+                    columns={columns}
+                    isPaginated={false}
+                />
+            )}
             <NavigateButton
                 label="View All"
                 href="/campaigns"

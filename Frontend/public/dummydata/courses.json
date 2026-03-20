@@ -123,5 +123,380 @@
                 "videoUrl": "https://example.com/videos/lesson-010.mp4"
             }
         ]
+    },
+    {
+        "id": 6,
+        "title": "Flutter UI Mastery",
+        "caption": "Build beautiful mobile screens",
+        "description": "Deep dive into Flutter widgets, state management, and creating responsive layouts for iOS and Android.",
+        "totalLessons": 35,
+        "thumbnail": "https://example.com/images/course-006.jpg",
+        "createdAt": "2025-05-15T10:00:00Z",
+        "updatedAt": "2025-08-01T14:00:00Z",
+        "published": true,
+        "lessons": [
+            {
+                "id": "lesson-011",
+                "title": "Understanding the Widget Tree",
+                "duration": "16:20",
+                "videoUrl": "https://example.com/videos/lesson-011.mp4"
+            },
+            {
+                "id": "lesson-012",
+                "title": "Stateful vs Stateless Widgets",
+                "duration": "21:15",
+                "videoUrl": "https://example.com/videos/lesson-012.mp4"
+            }
+        ]
+    },
+    {
+        "id": 7,
+        "title": "Advanced JavaScript Concepts",
+        "caption": "Take your JS skills further",
+        "description": "Explore closures, promises, async/await, and the event loop in modern JavaScript.",
+        "totalLessons": 25,
+        "thumbnail": "https://example.com/images/course-007.jpg",
+        "createdAt": "2025-06-02T08:30:00Z",
+        "updatedAt": "2025-08-10T11:00:00Z",
+        "published": true,
+        "lessons": [
+            {
+                "id": "lesson-013",
+                "title": "The Event Loop Explained",
+                "duration": "14:50",
+                "videoUrl": "https://example.com/videos/lesson-013.mp4"
+            },
+            {
+                "id": "lesson-014",
+                "title": "Mastering Promises",
+                "duration": "18:45",
+                "videoUrl": "https://example.com/videos/lesson-014.mp4"
+            }
+        ]
+    },
+    {
+        "id": 8,
+        "title": "React Frontend Development",
+        "caption": "Build interactive user interfaces",
+        "description": "Learn components, hooks, and routing to build modern single-page applications.",
+        "totalLessons": 42,
+        "thumbnail": "https://example.com/images/course-008.jpg",
+        "createdAt": "2025-06-20T09:00:00Z",
+        "updatedAt": "2025-09-05T15:30:00Z",
+        "published": false,
+        "lessons": [
+            {
+                "id": "lesson-015",
+                "title": "Introduction to JSX",
+                "duration": "12:10",
+                "videoUrl": "https://example.com/videos/lesson-015.mp4"
+            },
+            {
+                "id": "lesson-016",
+                "title": "Managing State with Hooks",
+                "duration": "24:30",
+                "videoUrl": "https://example.com/videos/lesson-016.mp4"
+            }
+        ]
+    },
+    {
+        "id": 9,
+        "title": "Node.js Backend Architecture",
+        "caption": "Server-side JavaScript",
+        "description": "Set up REST APIs, handle authentication, and connect to databases using Node.js and Express.",
+        "totalLessons": 32,
+        "thumbnail": "https://example.com/images/course-009.jpg",
+        "createdAt": "2025-07-10T13:00:00Z",
+        "updatedAt": "2025-09-15T10:45:00Z",
+        "published": true,
+        "lessons": [
+            {
+                "id": "lesson-017",
+                "title": "Setting up Express Server",
+                "duration": "17:00",
+                "videoUrl": "https://example.com/videos/lesson-017.mp4"
+            },
+            {
+                "id": "lesson-018",
+                "title": "Middleware and Routing",
+                "duration": "20:25",
+                "videoUrl": "https://example.com/videos/lesson-018.mp4"
+            }
+        ]
+    },
+    {
+        "id": 10,
+        "title": "UI/UX Design with Figma",
+        "caption": "Design systems and prototypes",
+        "description": "Create stunning user interfaces, set up design systems, components, and interactive variants.",
+        "totalLessons": 22,
+        "thumbnail": "https://example.com/images/course-010.jpg",
+        "createdAt": "2025-07-25T11:20:00Z",
+        "updatedAt": "2025-10-01T09:15:00Z",
+        "published": true,
+        "lessons": [
+            {
+                "id": "lesson-019",
+                "title": "Figma Basics and Interface",
+                "duration": "15:40",
+                "videoUrl": "https://example.com/videos/lesson-019.mp4"
+            },
+            {
+                "id": "lesson-020",
+                "title": "Creating Component Variants",
+                "duration": "19:10",
+                "videoUrl": "https://example.com/videos/lesson-020.mp4"
+            }
+        ]
+    },
+    {
+        "id": 11,
+        "title": "Python for Backend Engineering",
+        "caption": "Scalable backends with Django",
+        "description": "Learn to use Python and Django to build robust APIs, manage models, and debug complex backend issues.",
+        "totalLessons": 38,
+        "thumbnail": "https://example.com/images/course-011.jpg",
+        "createdAt": "2025-08-05T14:30:00Z",
+        "updatedAt": "2025-10-20T16:00:00Z",
+        "published": true,
+        "lessons": [
+            {
+                "id": "lesson-021",
+                "title": "Django Project Structure",
+                "duration": "18:00",
+                "videoUrl": "https://example.com/videos/lesson-021.mp4"
+            },
+            {
+                "id": "lesson-022",
+                "title": "ORM and Database Models",
+                "duration": "26:15",
+                "videoUrl": "https://example.com/videos/lesson-022.mp4"
+            }
+        ]
+    },
+    {
+        "id": 12,
+        "title": "Microcontrollers and Circuit Design",
+        "caption": "Hardware meets software",
+        "description": "Design custom PCBs and program microcontrollers like the ATmega328P to interact with Wi-Fi modules and sensors.",
+        "totalLessons": 26,
+        "thumbnail": "https://example.com/images/course-012.jpg",
+        "createdAt": "2025-08-15T09:00:00Z",
+        "updatedAt": "2025-11-05T10:30:00Z",
+        "published": true,
+        "lessons": [
+            {
+                "id": "lesson-023",
+                "title": "Introduction to ATmega328P",
+                "duration": "13:50",
+                "videoUrl": "https://example.com/videos/lesson-023.mp4"
+            },
+            {
+                "id": "lesson-024",
+                "title": "Reading RFID and QR Scanners",
+                "duration": "22:45",
+                "videoUrl": "https://example.com/videos/lesson-024.mp4"
+            }
+        ]
+    },
+    {
+        "id": 13,
+        "title": "Cybersecurity: Phishing Simulation",
+        "caption": "Protect against social engineering",
+        "description": "Understand the mechanics of phishing attacks and build automated remediation platforms.",
+        "totalLessons": 18,
+        "thumbnail": "https://example.com/images/course-013.jpg",
+        "createdAt": "2025-09-01T08:00:00Z",
+        "updatedAt": "2025-11-15T12:00:00Z",
+        "published": false,
+        "lessons": [
+            {
+                "id": "lesson-025",
+                "title": "Anatomy of a Phishing Email",
+                "duration": "14:20",
+                "videoUrl": "https://example.com/videos/lesson-025.mp4"
+            },
+            {
+                "id": "lesson-026",
+                "title": "Frontend Remediation Strategies",
+                "duration": "17:35",
+                "videoUrl": "https://example.com/videos/lesson-026.mp4"
+            }
+        ]
+    },
+    {
+        "id": 14,
+        "title": "Version Control with Git",
+        "caption": "Collaborate like a pro",
+        "description": "Master Git workflows, branching strategies, and resolving merge conflicts in monorepos.",
+        "totalLessons": 15,
+        "thumbnail": "https://example.com/images/course-014.jpg",
+        "createdAt": "2025-09-12T10:15:00Z",
+        "updatedAt": "2025-11-20T14:45:00Z",
+        "published": true,
+        "lessons": [
+            {
+                "id": "lesson-027",
+                "title": "Initializing a Repository",
+                "duration": "09:30",
+                "videoUrl": "https://example.com/videos/lesson-027.mp4"
+            },
+            {
+                "id": "lesson-028",
+                "title": "Handling Merge Conflicts",
+                "duration": "16:10",
+                "videoUrl": "https://example.com/videos/lesson-028.mp4"
+            }
+        ]
+    },
+    {
+        "id": 15,
+        "title": "Building Monorepos",
+        "caption": "Organize full-stack projects",
+        "description": "Learn how to structure GitHub repositories containing separate frontend and backend folders.",
+        "totalLessons": 12,
+        "thumbnail": "https://example.com/images/course-015.jpg",
+        "createdAt": "2025-09-25T13:30:00Z",
+        "updatedAt": "2025-12-01T09:00:00Z",
+        "published": true,
+        "lessons": [
+            {
+                "id": "lesson-029",
+                "title": "Why Use a Monorepo?",
+                "duration": "11:15",
+                "videoUrl": "https://example.com/videos/lesson-029.mp4"
+            },
+            {
+                "id": "lesson-030",
+                "title": "Configuring Workspaces",
+                "duration": "20:00",
+                "videoUrl": "https://example.com/videos/lesson-030.mp4"
+            }
+        ]
+    },
+    {
+        "id": 16,
+        "title": "Docker for Developers",
+        "caption": "Containerize your applications",
+        "description": "Create Dockerfiles, manage images, and use Docker Compose for multi-container environments.",
+        "totalLessons": 20,
+        "thumbnail": "https://example.com/images/course-016.jpg",
+        "createdAt": "2025-10-05T09:45:00Z",
+        "updatedAt": "2025-12-10T11:20:00Z",
+        "published": true,
+        "lessons": [
+            {
+                "id": "lesson-031",
+                "title": "Introduction to Containers",
+                "duration": "13:40",
+                "videoUrl": "https://example.com/videos/lesson-031.mp4"
+            },
+            {
+                "id": "lesson-032",
+                "title": "Writing a Dockerfile",
+                "duration": "18:55",
+                "videoUrl": "https://example.com/videos/lesson-032.mp4"
+            }
+        ]
+    },
+    {
+        "id": 17,
+        "title": "Authentication Strategies",
+        "caption": "Secure user access",
+        "description": "Implement robust login/logout flows, manage JWTs, and handle session states across React and Django.",
+        "totalLessons": 16,
+        "thumbnail": "https://example.com/images/course-017.jpg",
+        "createdAt": "2025-10-18T15:00:00Z",
+        "updatedAt": "2025-12-15T10:00:00Z",
+        "published": true,
+        "lessons": [
+            {
+                "id": "lesson-033",
+                "title": "Session vs Token Auth",
+                "duration": "15:20",
+                "videoUrl": "https://example.com/videos/lesson-033.mp4"
+            },
+            {
+                "id": "lesson-034",
+                "title": "Implementing JWT in Django",
+                "duration": "24:10",
+                "videoUrl": "https://example.com/videos/lesson-034.mp4"
+            }
+        ]
+    },
+    {
+        "id": 18,
+        "title": "Advanced API Design",
+        "caption": "Build robust endpoints",
+        "description": "Learn RESTful principles, GraphQL implementation, and how to version your APIs effectively.",
+        "totalLessons": 24,
+        "thumbnail": "https://example.com/images/course-018.jpg",
+        "createdAt": "2025-11-01T08:30:00Z",
+        "updatedAt": "2026-01-05T14:15:00Z",
+        "published": false,
+        "lessons": [
+            {
+                "id": "lesson-035",
+                "title": "RESTful Best Practices",
+                "duration": "16:45",
+                "videoUrl": "https://example.com/videos/lesson-035.mp4"
+            },
+            {
+                "id": "lesson-036",
+                "title": "Introduction to GraphQL",
+                "duration": "21:30",
+                "videoUrl": "https://example.com/videos/lesson-036.mp4"
+            }
+        ]
+    },
+    {
+        "id": 19,
+        "title": "Cloud Deployment with AWS",
+        "caption": "Host your applications",
+        "description": "Deploy web apps using EC2, manage databases with RDS, and configure S3 for asset storage.",
+        "totalLessons": 30,
+        "thumbnail": "https://example.com/images/course-019.jpg",
+        "createdAt": "2025-11-15T11:00:00Z",
+        "updatedAt": "2026-01-20T09:45:00Z",
+        "published": true,
+        "lessons": [
+            {
+                "id": "lesson-037",
+                "title": "Setting up an EC2 Instance",
+                "duration": "19:15",
+                "videoUrl": "https://example.com/videos/lesson-037.mp4"
+            },
+            {
+                "id": "lesson-038",
+                "title": "Configuring Security Groups",
+                "duration": "12:50",
+                "videoUrl": "https://example.com/videos/lesson-038.mp4"
+            }
+        ]
+    },
+    {
+        "id": 20,
+        "title": "Software Testing Strategies",
+        "caption": "Write bug-free code",
+        "description": "Master unit testing, integration testing, and end-to-end testing for web applications.",
+        "totalLessons": 22,
+        "thumbnail": "https://example.com/images/course-020.jpg",
+        "createdAt": "2025-12-01T14:20:00Z",
+        "updatedAt": "2026-02-10T16:30:00Z",
+        "published": true,
+        "lessons": [
+            {
+                "id": "lesson-039",
+                "title": "Introduction to Unit Testing",
+                "duration": "14:00",
+                "videoUrl": "https://example.com/videos/lesson-039.mp4"
+            },
+            {
+                "id": "lesson-040",
+                "title": "Mocking API Calls",
+                "duration": "23:10",
+                "videoUrl": "https://example.com/videos/lesson-040.mp4"
+            }
+        ]
     }
 ]

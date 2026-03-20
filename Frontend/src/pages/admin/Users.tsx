@@ -157,7 +157,13 @@ function Users() {
                 children="Add User"
             />
 
-            <TableComponent data={data} columns={columns} />
+            {isLoading ? (
+                <div className="py-8 text-gray-500 animate-pulse">
+                    Loading Users...
+                </div>
+            ) : (
+                <TableComponent data={data} columns={columns} />
+            )}
 
             {isModalOpen && (
                 <UserModal

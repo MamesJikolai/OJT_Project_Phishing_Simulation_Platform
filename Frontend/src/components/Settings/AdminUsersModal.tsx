@@ -1,13 +1,13 @@
 import DefaultButton from '../DefaultButton.tsx'
 import TextInput from '../TextInput.tsx'
-import type { Account } from '../../types/models.ts'
+import type { Accounts } from '../../types/models.ts'
 import { useState } from 'react'
 
 // 2. Add your Campaign type here or import it
 interface AdminUsersModalProps {
     isOpen: boolean
     onClose: () => void
-    onSave: (account: Account) => void
+    onSave: (account: Accounts) => void
 }
 
 function AdminUserModal({ isOpen, onClose, onSave }: AdminUsersModalProps) {

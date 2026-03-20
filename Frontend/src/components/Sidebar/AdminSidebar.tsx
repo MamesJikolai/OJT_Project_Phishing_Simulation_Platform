@@ -4,6 +4,7 @@ import MenuItem from './MenuItem.tsx'
 import { Icons } from '../../assets/icons.ts'
 import { apiService } from '../../services/userService.ts' // Make sure this path is correct
 import type { Accounts } from '../../types/models.ts'
+import { useAuth } from '../../context/AuthContext.tsx'
 
 const navLinksTop = [
     {
@@ -75,37 +76,9 @@ const navLinksBottom = [
 ]
 
 function AdminSidebar() {
-    const [userRole, setUserRole] = useState<string>('')
-    const [isLoading, setIsLoading] = useState(true)
-
-    // Use React Router's navigate function instead of window.location
+    const { user } = useAuth()
+    const userRole = user?.role || ''
     const navigate = useNavigate()
-
-    useEffect(() => {
-        const fetchUserRole = async () => {
-            try {
-                const userId = localStorage.getItem('userId')
-                if (!userId) return
-
-                // Fetch the user data dynamically
-                const fetchedAccounts =
-                    await apiService.getAll<Accounts>('accounts')
-                const currentUser = fetchedAccounts.find(
-                    (u) => u.id === Number(userId)
-                )
-
-                if (currentUser) {
-                    setUserRole(currentUser.role)
-                }
-            } catch (error) {
-                console.error('Failed to fetch user role for sidebar:', error)
-            } finally {
-                setIsLoading(false)
-            }
-        }
-
-        fetchUserRole()
-    }, [])
 
     // Filter links based on the fetched role
     const filteredNavLinksTop = navLinksTop.filter((link) =>
@@ -120,13 +93,6 @@ function AdminSidebar() {
         localStorage.removeItem('userId')
         // Seamlessly redirect without reloading the whole browser tab
         navigate('/home')
-    }
-
-    // Optional: Show a skeleton or loading state so the sidebar doesn't flash empty
-    if (isLoading) {
-        return (
-            <div className="w-[240px] h-full bg-[#F8F9FA] animate-pulse"></div>
-        )
     }
 
     return (

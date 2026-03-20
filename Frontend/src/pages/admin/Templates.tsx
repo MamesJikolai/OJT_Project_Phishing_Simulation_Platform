@@ -8,7 +8,7 @@ import { apiService } from '../../services/userService'
 
 function Templates() {
     const [data, setData] = useState<EmailTemplate[]>([])
-    const [loading, setIsLoading] = useState(true)
+    const [isLoading, setIsLoading] = useState(true)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [modalMode, setModalMode] = useState<'create' | 'view' | 'edit'>(
         'create'
@@ -111,12 +111,19 @@ function Templates() {
                 className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA]"
             />
 
-            <EmailTemplateCard
-                emailTemplate={data}
-                openViewModal={openViewModal}
-                openEditModal={openEditModal}
-                handleDeleteTemplate={handleDeleteTemplate}
-            />
+            {/* Cards Container */}
+            {isLoading ? (
+                <div className="py-8 text-gray-500 animate-pulse">
+                    Loading Email Templates...
+                </div>
+            ) : (
+                <EmailTemplateCard
+                    emailTemplate={data}
+                    openViewModal={openViewModal}
+                    openEditModal={openEditModal}
+                    handleDeleteTemplate={handleDeleteTemplate}
+                />
+            )}
 
             {isModalOpen && (
                 <TemplateModal
