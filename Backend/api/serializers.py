@@ -20,9 +20,11 @@ class LoginSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model  = User
-        fields = ['id', 'username', 'email', 'first_name', 'last_name',
-                  'is_staff', 'is_superuser', 'date_joined']
-        read_only_fields = ['id', 'date_joined']
+        fields = [
+            'id', 'username', 'email', 'first_name', 'last_name',
+            'role', 'is_staff', 'is_superuser', 'date_joined',
+        ]
+        read_only_fields = ['id', 'is_staff', 'is_superuser', 'date_joined']
 
 
 # ── Email Templates ────────────────────────────────────────────────────────────
@@ -313,14 +315,19 @@ class AnalyticsSummarySerializer(serializers.Serializer):
 # ── Platform Settings ─────────────────────────────────────────────────────────
 
 class PlatformSettingsSerializer(serializers.Serializer):
-    platform_name       = serializers.CharField(max_length=255)
-    platform_base_url   = serializers.URLField()
-    frontend_url        = serializers.URLField()
-    default_from_name   = serializers.CharField(max_length=255)
-    session_expiry_days = serializers.IntegerField(min_value=1)
-    allow_quiz_retake   = serializers.BooleanField()
-    logo_url            = serializers.SerializerMethodField()
-    updated_at          = serializers.DateTimeField(read_only=True)
+    platform_name        = serializers.CharField(max_length=255)
+    platform_base_url    = serializers.URLField()
+    frontend_url         = serializers.URLField()
+    default_from_name    = serializers.CharField(max_length=255)
+    session_expiry_days  = serializers.IntegerField(min_value=1)
+    allow_quiz_retake    = serializers.BooleanField()
+    # Landing page content
+    landing_title        = serializers.CharField(max_length=255)
+    landing_message1     = serializers.CharField()
+    landing_message2     = serializers.CharField()
+    landing_button_text  = serializers.CharField(max_length=100)
+    logo_url             = serializers.SerializerMethodField()
+    updated_at           = serializers.DateTimeField(read_only=True)
 
     def get_logo_url(self, obj):
         request = self.context.get('request')

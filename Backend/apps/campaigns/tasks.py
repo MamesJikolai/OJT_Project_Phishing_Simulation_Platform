@@ -6,8 +6,93 @@ from django.core.mail.backends.smtp import EmailBackend
 logger = logging.getLogger(__name__)
 
 
+def _is_html(text: str) -> bool:
+    """
+    Returns True if the text contains HTML tags.
+    Used to decide whether to convert plain text newlines to <br>.
+    """
+    import re
+    return bool(re.search(r'<[a-zA-Z][^>]*>', text))
+
+
+def _convert_markdown_links(text: str) -> str:
+    """
+    Convert Markdown-style links [text](url) to HTML <a> tags.
+    This runs AFTER html.escape(), so the brackets [ ] ( ) are
+    still plain characters — we match them literally.
+
+    Example:
+        [here]({{ phishing_link }})
+        -> <a href="...">here</a>
+
+    Note: {{ phishing_link }} is substituted BEFORE this function
+    is called, so by the time we run, the URL is already the real link.
+    """
+    import re
+    # Match [link text](url) — url can contain any non-whitespace chars
+    pattern = r'\[([^\]]+)\]\(([^\)]+)\)'
+    replacement = r'<a href="\2" style="color:#1a73e8;">\1</a>'
+    return re.sub(pattern, replacement, text)
+
+
+def _plain_to_html(text: str) -> str:
+    """
+    Convert plain text to basic HTML preserving newlines.
+
+    Supported formatting (Markdown-lite):
+        Single newline       -> <br>
+        Double newline       -> new paragraph <p>
+        [link text](url)     -> <a href="url">link text</a>
+
+    Example input:
+        Dear {{ target_name }},
+
+        Please verify your account by clicking [here]({{ phishing_link }}).
+
+        Regards,
+        IT Team
+
+    Example output (rendered in email):
+        Dear John,
+
+        Please verify your account by clicking here.  (where "here" is a link)
+
+        Regards,
+        IT Team
+    """
+    import html as html_module
+    # Step 1 — escape HTML special chars so < > & display literally
+    escaped   = html_module.escape(text)
+    # Step 2 — convert [text](url) to <a href="url">text</a>
+    linked    = _convert_markdown_links(escaped)
+    double_nl = '\n\n'
+    single_nl = '\n'
+    br_tag    = '<br>'
+    paragraphs = linked.split(double_nl)
+    html_parts = []
+    for para in paragraphs:
+        para = para.replace(single_nl, br_tag)
+        html_parts.append('<p style="margin:0 0 12px 0;">' + para + '</p>')
+    body_content = ''.join(html_parts)
+    header = (
+        '<!DOCTYPE html><html><head><meta charset="utf-8"></head>'
+        '<body style="font-family:Arial,sans-serif;font-size:14px;'
+        'line-height:1.6;color:#333333;margin:0;padding:20px;">'
+        '<div style="max-width:600px;margin:0 auto;">'
+    )
+    footer = '</div></body></html>'
+    return header + body_content + footer
+
+
 def render_body(body_html: str, target, campaign) -> str:
-    """Replace {{ variable }} placeholders in the email body."""
+    """
+    Replace {{ variable }} placeholders and ensure the result is
+    valid HTML for email sending.
+
+    If the template body contains HTML tags it is used as-is (after
+    variable substitution). If it is plain text, newlines are
+    converted to <br> / <p> tags so the formatting is preserved.
+    """
     if campaign.created_by:
         company = campaign.created_by.get_full_name() or campaign.created_by.username
     else:
@@ -31,8 +116,28 @@ def render_body(body_html: str, target, campaign) -> str:
     }
 
     body = body_html
+
+    # Handle {{ phishing_link_text:display text }} — renders as a hyperlink
+    # e.g. {{ phishing_link_text:click here }} → <a href="...">click here</a>
+    import re
+    def replace_link_text(match):
+        display = match.group(1).strip()
+        return '<a href="' + target.phishing_link + '">' + display + '</a>'
+
+    body = re.sub(
+        r'\{\{\s*phishing_link_text\s*:\s*(.+?)\s*\}\}',
+        replace_link_text,
+        body,
+    )
+
     for placeholder, value in replacements.items():
         body = body.replace(placeholder, value)
+
+    # If the admin typed plain text (no HTML tags), convert it to
+    # HTML so newlines and paragraphs render correctly in email clients
+    if not _is_html(body):
+        body = _plain_to_html(body)
+
     return body
 
 

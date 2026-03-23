@@ -31,12 +31,38 @@ class PlatformSettings(models.Model):
     lms_path            = models.CharField(
         max_length=100,
         default='lms',
+        blank = True,
         help_text=(
             'Frontend path employees land on after clicking a phishing link. '
             'Do NOT include slashes — e.g. "lms", "training", "courses". '
-            'The final URL will be: {frontend_url}/{lms_path}?token={uuid}'
+            'Leave blank to redirect to the root: '
+            '{frontend_url}/?token={uuid}'
         )
     )
+    # ── Landing page content ──────────────────────────────────────────────────
+    landing_title    = models.CharField(
+        max_length=255,
+        default='Wait! This was a Phishing Simulation',
+        help_text='Main heading shown on the employee LMS landing page.'
+    )
+    landing_message1 = models.TextField(
+        default=(
+            'Don\'t worry, your data is safe. However, a real attacker could have used that link to access your personal details, address, and credit information.'
+        ),
+        help_text='First paragraph shown below the title on the landing page.'
+    )
+    landing_message2 = models.TextField(
+        default=(
+            'Your security is a priority. Please follow the link below to complete your required phishing awareness module.'
+        ),
+        help_text='Second paragraph shown below Message 1 on the landing page.'
+    )
+    landing_button_text = models.CharField(
+        max_length=100,
+        default='Go to Training Portal',
+        help_text='Text displayed on the button that starts the LMS course.'
+    )
+
     logo                = models.ImageField(
         upload_to='platform/', null=True, blank=True
     )

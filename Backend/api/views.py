@@ -8,6 +8,7 @@ from django.http import HttpResponse
 from django.utils import timezone
 from django.utils.timezone import localtime
 from rest_framework import status, viewsets, filters
+from api.permissions import IsAdminRole, IsAdminOrHRReadOnly
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 from rest_framework.response import Response
@@ -76,6 +77,7 @@ class LoginView(APIView):
                 'username':     user.username,
                 'email':        user.email,
                 'full_name':    user.get_full_name(),
+                'role':         user.role,
                 'is_staff':     user.is_staff,
                 'is_superuser': user.is_superuser,
             },
@@ -109,17 +111,55 @@ class LogoutView(APIView):
 
 
 class MeView(APIView):
+    # Both admin and HR can GET and PATCH their own profile
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         return Response(UserSerializer(request.user).data)
 
     def patch(self, request):
-        for field in ['first_name', 'last_name', 'email']:
+        allowed = ['first_name', 'last_name', 'email']
+        for field in allowed:
             if field in request.data:
                 setattr(request.user, field, request.data[field])
         request.user.save()
         return Response(UserSerializer(request.user).data)
+
+
+class ChangePasswordView(APIView):
+    # POST /api/v1/auth/change-password/
+    # Body: { current_password, new_password, confirm_password }
+    # Both admin and HR can change their own password.
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        current  = request.data.get('current_password', '').strip()
+        new_pw   = request.data.get('new_password', '').strip()
+        confirm  = request.data.get('confirm_password', '').strip()
+
+        if not current or not new_pw or not confirm:
+            return Response(
+                {'error': 'current_password, new_password and confirm_password are required.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        if not request.user.check_password(current):
+            return Response(
+                {'error': 'Current password is incorrect.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        if new_pw != confirm:
+            return Response(
+                {'error': 'New password and confirm password do not match.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        if len(new_pw) < 8:
+            return Response(
+                {'error': 'New password must be at least 8 characters.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        request.user.set_password(new_pw)
+        request.user.save()
+        return Response({'detail': 'Password changed successfully.'})
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -137,7 +177,7 @@ class EmailTemplateViewSet(viewsets.ModelViewSet):
     """
     queryset           = EmailTemplate.objects.select_related('created_by').all()
     serializer_class   = EmailTemplateSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminOrHRReadOnly]
     filter_backends    = [filters.SearchFilter, filters.OrderingFilter]
     search_fields      = ['name', 'subject', 'sender_name']
     ordering_fields    = ['name', 'created_at']
@@ -163,7 +203,7 @@ class CampaignViewSet(viewsets.ModelViewSet):
     POST   /api/v1/campaigns/<id>/pause/        — pause
     POST   /api/v1/campaigns/<id>/complete/     — mark complete
     """
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminOrHRReadOnly]
     filter_backends    = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields   = ['status']
     search_fields      = ['name', 'description']
@@ -263,7 +303,7 @@ class CampaignTargetViewSet(viewsets.ModelViewSet):
     POST   /api/v1/campaigns/<campaign_pk>/targets/upload_csv/ — bulk CSV upload
     """
     serializer_class   = CampaignTargetSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminOrHRReadOnly]
     filter_backends    = [filters.SearchFilter]
     search_fields      = ['email', 'full_name', 'department']
     http_method_names  = ['get', 'post', 'patch', 'delete', 'head', 'options']
@@ -315,7 +355,7 @@ class CampaignTargetViewSet(viewsets.ModelViewSet):
 # ── Flat view: all targets across all campaigns (for user management page) ─────
 
 class AllTargetsView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminOrHRReadOnly]
 
     def get(self, request):
         qs = CampaignTarget.objects.select_related('campaign').order_by(
@@ -366,8 +406,8 @@ class CourseViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action in ('create', 'update', 'partial_update', 'destroy'):
-            return [IsAdminUser()]
-        return [IsAuthenticated()]
+            return [IsAdminRole()]
+        return [IsAdminOrHRReadOnly()]
 
     def get_queryset(self):
         if self.request.user.is_staff:
@@ -614,7 +654,7 @@ class LMSSubmitQuizView(APIView):
 # ═══════════════════════════════════════════════════════════════════════════════
 
 class DashboardView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminOrHRReadOnly]
 
     def get(self, request):
         total_targets  = CampaignTarget.objects.count()
@@ -654,7 +694,7 @@ class DashboardView(APIView):
 
 
 class AnalyticsView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminOrHRReadOnly]
 
     def get(self, request):
         total_sent    = CampaignTarget.objects.filter(email_sent_at__isnull=False).count()
@@ -707,7 +747,7 @@ class AnalyticsView(APIView):
 
 
 class ExportCampaignCSVView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminOrHRReadOnly]
 
     def get(self, request, campaign_pk):
         try:
@@ -739,7 +779,7 @@ class ExportCampaignCSVView(APIView):
 
 
 class ExportAllCSVView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminOrHRReadOnly]
 
     def get(self, request):
         targets = CampaignTarget.objects.select_related('campaign').order_by(
@@ -769,7 +809,7 @@ class ExportAllCSVView(APIView):
 
 # ── Quiz attempt results (for analytics page) ─────────────────────────────────
 class QuizAttemptsView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminOrHRReadOnly]
 
     def get(self, request):
         qs = QuizAttempt.objects.select_related(
@@ -796,9 +836,9 @@ from django.core.mail.backends.smtp import EmailBackend as SMTPBackend
 class PlatformSettingsView(APIView):
     """
     GET  /api/v1/settings/   — retrieve current settings
-    PATCH /api/v1/settings/  — update settings (staff only)
+    PATCH /api/v1/settings/  — update settings (admin only)
     """
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminOrHRReadOnly]
 
     def get(self, request):
         settings_obj = PlatformSettings.get()
@@ -807,8 +847,8 @@ class PlatformSettingsView(APIView):
         )
 
     def patch(self, request):
-        if not request.user.is_staff:
-            return Response({'error': 'Staff access required.'}, status=403)
+        if getattr(request.user, 'role', None) != 'admin':
+            return Response({'error': 'Only Admin users can change platform settings.'}, status=403)
 
         settings_obj = PlatformSettings.get()
         serializer   = PlatformSettingsSerializer(data=request.data, partial=True)
@@ -820,6 +860,8 @@ class PlatformSettingsView(APIView):
         updatable = [
             'platform_name', 'platform_base_url', 'frontend_url',
             'default_from_name', 'session_expiry_days', 'allow_quiz_retake',
+            'landing_title', 'landing_message1',
+            'landing_message2', 'landing_button_text',
         ]
         for field in updatable:
             if field in d:
@@ -839,7 +881,7 @@ class SMTPTestView(APIView):
     POST /api/v1/settings/smtp-test/
     Send a test email to verify SMTP credentials before using them in a campaign.
     """
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminRole]
 
     def post(self, request):
         serializer = SMTPTestSerializer(data=request.data)

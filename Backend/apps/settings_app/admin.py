@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib import admin
 from django.shortcuts import redirect
+from django.utils.safestring import mark_safe
 from django.urls import path
 from django.core.mail import EmailMessage
 from django.core.mail.backends.smtp import EmailBackend
@@ -41,15 +42,30 @@ class PlatformSettingsAdmin(admin.ModelAdmin):
         ('Campaign Defaults', {
             'fields': ('default_from_name',),
         }),
+        ('Landing Page Content', {
+            'fields': (
+                'landing_title',
+                'landing_message1',
+                'landing_message2',
+                'landing_button_text',
+            ),
+            'description': (
+                'Text displayed on the employee training page after they click '
+                'a phishing link. These values are returned by the API and '
+                'used by the React frontend to render the landing page.'
+            ),
+        }),
         ('LMS', {
             'fields': ('session_expiry_days', 'allow_quiz_retake'),
         }),
         ('SMTP Test', {
             'fields': (),
-            'description': (
-                '<br><a class="button" href="/admin/settings_app/smtp-test/" '
-                'style="padding:8px 16px; background:#205067; color:white; '
-                'border-radius:8px; text-decoration:none; font-weight:bold;">'
+            'description': mark_safe(
+                '<br>'
+                '<a class="button" href="/admin/settings_app/smtp-test/" '
+                'style="padding:8px 18px; background:#417690; color:white; '
+                'border-radius:4px; text-decoration:none; font-weight:bold; '
+                'display:inline-block; margin-top:4px;">'
                 '&rarr; Open SMTP / Email Test</a>'
             ),
         }),
@@ -183,24 +199,24 @@ class PlatformSettingsAdmin(admin.ModelAdmin):
         /* ── Dark mode overrides ──────────────────────────────── */
         @media (prefers-color-scheme: dark) {{
             :root {{
-                --bg:          #121212;
-                --surface:     #121212;
-                --border:      #353535;
+                --bg:          #1a1a2e;
+                --surface:     #16213e;
+                --border:      #444466;
                 --text:        #e0e0e0;
                 --text-muted:  #aaaaaa;
                 --label:       #cccccc;
-                --btn-bg:      #205067;
-                --btn-hover:   #417690;
+                --btn-bg:      #2a6496;
+                --btn-hover:   #1e4d73;
                 --btn-text:    #ffffff;
-                --input-bg:    #121212;
-                --input-border:#353535;
+                --input-bg:    #0f3460;
+                --input-border:#445577;
                 --ok-bg:       #1a3a1a;
                 --ok-border:   #3c763d;
                 --ok-text:     #7ec87e;
                 --err-bg:      #3a1a1a;
                 --err-border:  #a94442;
                 --err-text:    #e07070;
-                --header-bg:   #417690;
+                --header-bg:   #0f3460;
                 --header-text: #e0e0e0;
                 --link:        #6ab0d4;
             }}

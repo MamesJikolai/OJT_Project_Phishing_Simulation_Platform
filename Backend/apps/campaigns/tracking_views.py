@@ -48,4 +48,5 @@ def phishing_click(request, token):
         frontend_url = settings.FRONTEND_URL.rstrip('/')
         lms_path     = 'lms'
 
-    return redirect(f'{frontend_url}/{lms_path}?token={token}')
+    path_part = f'/{lms_path}' if lms_path else ''
+    return redirect(f'{frontend_url}{path_part}?token={token}')

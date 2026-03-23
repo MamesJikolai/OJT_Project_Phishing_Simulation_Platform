@@ -16,7 +16,7 @@ dist-ssr
 
 # ENVIRONMENT VARIABLES (Important to keep private!)
 .env
-.env.*
+# .env.*
 **/.env
 
 # SYSTEM FILES

@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib import admin, messages
 from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from django.utils import timezone
 from django.utils.timezone import localtime
 from django.urls import path
@@ -145,12 +146,27 @@ class CampaignAdminForm(forms.ModelForm):
 class EmailTemplateAdminForm(forms.ModelForm):
     body_html = forms.CharField(
         widget=forms.Textarea(attrs={'rows': 30, 'cols': 80, 'style': 'font-family:monospace;width:100%;'}),
-        label='Email Body (HTML)',
-        help_text=(
-            'Write your email body as HTML. '
-            'Available variables: '
-            '{{ target_name }}, {{ target_email }}, {{ target_department }}, '
-            '{{ phishing_link }}, {{ company_name }}, {{ campaign_name }}'
+        label='Email Body',
+        help_text=mark_safe(
+            '<strong>Plain text mode:</strong> Just type normally. '
+            'Press Enter for a new line, press Enter twice for a new paragraph.<br><br>'
+            '<strong>Clickable link with custom text (plain text mode):</strong><br>'
+            'Use <code>[display text](url)</code> syntax:<br>'
+            '<code>Please click [here]({{ phishing_link }}) to verify your account.</code><br>'
+            'Renders as: Please click <em>here</em> (as a link) to verify your account.<br>'
+            'You can use any text: <code>[Verify Now]({{ phishing_link }})</code>, '
+            '<code>[click this link]({{ phishing_link }})</code>, etc.<br><br>'
+            '<strong>HTML mode:</strong> Write full HTML if you need '
+            'custom colours, images, or complex layouts. '
+            'The editor auto-detects which mode you are using '
+            '(any HTML tags trigger HTML mode).<br><br>'
+            '<strong>Available variables</strong> (work in both modes):<br>'
+            '<code>{{ target_name }}</code> &nbsp; '
+            '<code>{{ target_email }}</code> &nbsp; '
+            '<code>{{ target_department }}</code> &nbsp; '
+            '<code>{{ phishing_link }}</code> &nbsp; '
+            '<code>{{ company_name }}</code> &nbsp; '
+            '<code>{{ campaign_name }}</code>'
         ),
     )
 
@@ -202,14 +218,11 @@ class CampaignTargetInline(admin.TabularInline):
         'lms_completed_at', 'quiz_score',
     )
     show_change_link = True
-    # verbose_name_plural = (
-    #     'Targets '
-    # )
 
 
 # ── Campaign Admin Actions ─────────────────────────────────────────────────────
 
-@admin.action(description='▶  Launch selected campaigns')
+@admin.action(description='▶︎  Launch selected campaigns')
 def action_launch(modeladmin, request, queryset):
     for campaign in queryset:
         # ── Pre-flight checks ──────────────────────────────────────────────────
@@ -299,7 +312,7 @@ def action_launch(modeladmin, request, queryset):
                 )
 
 
-@admin.action(description='⏸  Pause selected campaigns')
+@admin.action(description='❚❚  Pause selected campaigns')
 def action_pause(modeladmin, request, queryset):
     count = queryset.filter(status=Campaign.STATUS_RUNNING).update(
         status=Campaign.STATUS_PAUSED
@@ -318,7 +331,7 @@ def action_complete(modeladmin, request, queryset):
     messages.success(request, f'{count} campaign(s) marked as completed.')
 
 
-@admin.action(description='↩  Reset selected campaigns to Draft')
+@admin.action(description='⟳  Reset selected campaigns to Draft')
 def action_reset_draft(modeladmin, request, queryset):
     count = queryset.update(status=Campaign.STATUS_DRAFT)
     messages.success(request, f'{count} campaign(s) reset to Draft.')
@@ -616,6 +629,10 @@ class CampaignAdmin(admin.ModelAdmin):
                 'created_by', 'scheduled_at',
             )
         }),
+        ('Timestamps', {
+            'fields': ('created_at', 'launched_at', 'completed_at'),
+            'classes': ('collapse',),
+        }),
         ('Stats', {
             'fields': (
                 'total_targets_display', 'emails_sent_display',
@@ -624,17 +641,12 @@ class CampaignAdmin(admin.ModelAdmin):
             ),
             'classes': ('collapse',),
         }),
-        ('Timestamps', {
-            'fields': ('created_at', 'launched_at', 'completed_at'),
-            'classes': ('collapse',),
-        }),
         ('SMTP Configuration', {
             'fields': (
                 'smtp_host', 'smtp_port', 'smtp_user',
                 'smtp_password', 'from_email',
                 'smtp_use_tls', 'smtp_use_ssl',
             ),
-            # 'classes': ('collapse',),
             'description': 'SMTP password is stored encrypted.',
         }),
         ('Upload Targets (CSV)', {
