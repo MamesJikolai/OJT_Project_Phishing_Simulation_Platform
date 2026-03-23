@@ -921,3 +921,134 @@ class SMTPTestView(APIView):
                 'status':  'error',
                 'message': str(e),
             }, status=400)
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# USER MANAGEMENT (admin accounts — not campaign targets)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class UserListView(APIView):
+    """
+    GET  /api/v1/users/      — list all admin/HR accounts
+    POST /api/v1/users/      — create a new admin/HR account (admin only)
+    """
+    permission_classes = [IsAdminOrHRReadOnly]
+
+    def get(self, request):
+        users = User.objects.all().order_by('-date_joined')
+        return Response(UserSerializer(users, many=True).data)
+
+    def post(self, request):
+        if getattr(request.user, 'role', None) != 'admin':
+            return Response(
+                {'error': 'Only Admin users can create accounts.'},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        username = request.data.get('username', '').strip()
+        password = request.data.get('password', '').strip()
+        role     = request.data.get('role', 'hr').strip()
+
+        if not username or not password:
+            return Response(
+                {'error': 'username and password are required.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        if role not in ('admin', 'hr'):
+            return Response(
+                {'error': 'role must be either "admin" or "hr".'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        if len(password) < 8:
+            return Response(
+                {'error': 'Password must be at least 8 characters.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        if User.objects.filter(username=username).exists():
+            return Response(
+                {'error': f'Username "{username}" is already taken.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        user = User.objects.create_user(
+            username   = username,
+            password   = password,
+            email      = request.data.get('email', '').strip(),
+            first_name = request.data.get('first_name', '').strip(),
+            last_name  = request.data.get('last_name', '').strip(),
+            role       = role,
+            is_staff   = True,   # all app users need staff flag for admin access
+        )
+        return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
+
+
+class UserDetailView(APIView):
+    """
+    GET    /api/v1/users/<id>/   — retrieve a single user
+    PATCH  /api/v1/users/<id>/   — update user details (admin only)
+    DELETE /api/v1/users/<id>/   — delete a user (admin only, cannot delete self)
+    """
+    permission_classes = [IsAdminOrHRReadOnly]
+
+    def _get_user(self, pk):
+        try:
+            return User.objects.get(pk=pk)
+        except User.DoesNotExist:
+            return None
+
+    def get(self, request, pk):
+        user = self._get_user(pk)
+        if not user:
+            return Response({'error': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
+        return Response(UserSerializer(user).data)
+
+    def patch(self, request, pk):
+        if getattr(request.user, 'role', None) != 'admin':
+            return Response(
+                {'error': 'Only Admin users can edit accounts.'},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        user = self._get_user(pk)
+        if not user:
+            return Response({'error': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        allowed = ['first_name', 'last_name', 'email', 'role']
+        for field in allowed:
+            if field in request.data:
+                # Validate role value
+                if field == 'role' and request.data['role'] not in ('admin', 'hr'):
+                    return Response(
+                        {'error': 'role must be "admin" or "hr".'},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+                setattr(user, field, request.data[field])
+
+        # Optional password reset
+        new_password = request.data.get('password', '').strip()
+        if new_password:
+            if len(new_password) < 8:
+                return Response(
+                    {'error': 'Password must be at least 8 characters.'},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            user.set_password(new_password)
+
+        user.save()
+        return Response(UserSerializer(user).data)
+
+    def delete(self, request, pk):
+        if getattr(request.user, 'role', None) != 'admin':
+            return Response(
+                {'error': 'Only Admin users can delete accounts.'},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        if request.user.pk == int(pk):
+            return Response(
+                {'error': 'You cannot delete your own account.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        user = self._get_user(pk)
+        if not user:
+            return Response({'error': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

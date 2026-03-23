@@ -55,4 +55,8 @@ urlpatterns = [
     # ── Platform Settings ──────────────────────────────────────────────────────
     path('settings/',           views.PlatformSettingsView.as_view(), name='settings'),
     path('settings/smtp-test/', views.SMTPTestView.as_view(),         name='smtp-test'),
+
+    # ── User Management (admin/HR accounts) ───────────────────────────────────
+    path('users/',        views.UserListView.as_view(),   name='user-list'),
+    path('users/<int:pk>/', views.UserDetailView.as_view(), name='user-detail'),
 ]
