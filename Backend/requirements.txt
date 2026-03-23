@@ -1,0 +1,15 @@
+Django
+djangorestframework
+djangorestframework-simplejwt
+django-nested-admin
+django-axes
+django-cors-headers
+django-filter
+django-q2
+psycopg2-binary
+cryptography
+python-decouple
+Pillow
+whitenoise
+markdown
+openpyxl

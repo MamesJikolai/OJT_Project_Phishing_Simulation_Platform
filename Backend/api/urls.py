@@ -1,0 +1,57 @@
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from rest_framework_simplejwt.views import TokenRefreshView
+
+from . import views
+
+# ── DRF Router — auto-generates CRUD URLs ─────────────────────────────────────
+router = DefaultRouter()
+router.register(r'templates',                    views.EmailTemplateViewSet,    basename='template')
+router.register(r'campaigns',                    views.CampaignViewSet,         basename='campaign')
+router.register(
+    r'campaigns/(?P<campaign_pk>[^/.]+)/targets',
+    views.CampaignTargetViewSet,
+    basename='campaign-target',
+)
+router.register(r'courses', views.CourseViewSet, basename='course')
+
+urlpatterns = [
+    # ── Router-generated URLs ──────────────────────────────────────────────────
+    # Templates:   GET/POST /templates/   GET/PATCH/DELETE /templates/<id>/
+    # Campaigns:   GET/POST /campaigns/   GET/PATCH/DELETE /campaigns/<id>/
+    #              POST /campaigns/<id>/launch/
+    #              POST /campaigns/<id>/pause/
+    #              POST /campaigns/<id>/complete/
+    # Targets:     GET/POST /campaigns/<id>/targets/
+    #              PATCH/DELETE /campaigns/<id>/targets/<id>/
+    #              POST /campaigns/<id>/targets/upload_csv/
+    # Courses:     GET/POST /courses/     GET/PATCH/DELETE /courses/<id>/
+    path('', include(router.urls)),
+
+    # ── Auth ───────────────────────────────────────────────────────────────────
+    path('auth/login/',   views.LoginView.as_view(),   name='login'),
+    path('auth/refresh/', views.RefreshView.as_view(),  name='refresh'),
+    path('auth/logout/',  views.LogoutView.as_view(),   name='logout'),
+    path('auth/me/',      views.MeView.as_view(),       name='me'),
+
+    # ── All targets (user management — across all campaigns) ──────────────────
+    path('targets/', views.AllTargetsView.as_view(), name='all-targets'),
+
+    # ── Dashboard ─────────────────────────────────────────────────────────────
+    path('dashboard/', views.DashboardView.as_view(), name='dashboard'),
+
+    # ── Analytics ─────────────────────────────────────────────────────────────
+    path('analytics/',                                  views.AnalyticsView.as_view(),       name='analytics'),
+    path('analytics/campaigns/<int:campaign_pk>/export/', views.ExportCampaignCSVView.as_view(), name='export-campaign'),
+    path('analytics/export/',                           views.ExportAllCSVView.as_view(),    name='export-all'),
+    path('analytics/quiz-attempts/',                    views.QuizAttemptsView.as_view(),    name='quiz-attempts'),
+
+    # ── LMS (employee-facing, no login required) ──────────────────────────────
+    path('lms/session/',                               views.LMSSessionView.as_view(),       name='lms-session'),
+    path('lms/lessons/<int:lesson_id>/complete/',      views.LMSCompleteLessonView.as_view(), name='lms-complete-lesson'),
+    path('lms/quiz/<int:quiz_id>/submit/',             views.LMSSubmitQuizView.as_view(),    name='lms-submit-quiz'),
+
+    # ── Platform Settings ──────────────────────────────────────────────────────
+    path('settings/',           views.PlatformSettingsView.as_view(), name='settings'),
+    path('settings/smtp-test/', views.SMTPTestView.as_view(),         name='smtp-test'),
+]
