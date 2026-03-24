@@ -30,7 +30,7 @@ class PlatformSettings(models.Model):
     )
     lms_path            = models.CharField(
         max_length=100,
-        default='lms',
+        default='',
         blank = True,
         help_text=(
             'Frontend path employees land on after clicking a phishing link. '
