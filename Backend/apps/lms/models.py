@@ -4,6 +4,10 @@ from django.conf import settings
 
 class Course(models.Model):
     title       = models.CharField(max_length=255)
+    caption     = models.CharField(
+        max_length=255, blank=True,
+        help_text='Short subtitle shown below the title, e.g. "Beginner · 30 min"'
+    )
     description = models.TextField(blank=True)
     thumbnail   = models.ImageField(upload_to='course_thumbnails/', null=True, blank=True)
     is_published = models.BooleanField(default=False)
@@ -101,5 +105,3 @@ class QuizChoice(models.Model):
 
     def __str__(self):
         return f'{"✓" if self.is_correct else "✗"} {self.text[:60]}'
-
-

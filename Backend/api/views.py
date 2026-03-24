@@ -469,6 +469,15 @@ class LMSSessionView(APIView):
                 'message':     'No training course is assigned to this campaign.',
             })
 
+        # Course must be published to be delivered to employees
+        if not course.is_published:
+            return Response({
+                'target_id':   target.id,
+                'target_name': target.full_name or target.email.split('@')[0],
+                'course':      None,
+                'message':     'The training course is not yet available. Please check back later.',
+            })
+
         # Build per-lesson progress
         progress_qs = LessonProgress.objects.filter(target=target, lesson__course=course)
         progress_map = {lp.lesson_id: lp for lp in progress_qs}

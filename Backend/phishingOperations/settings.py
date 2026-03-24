@@ -134,8 +134,7 @@ CORS_ALLOWED_ORIGINS = [
 ]
 CORS_ALLOW_CREDENTIALS = True
 
-# ── Django-Q2 (replaces Celery + Redis) ───────────────────────────────────────
-# Uses PostgreSQL as the broker — no Redis needed.
+# ── Django-Q2 ───────────────────────────────────────
 # Run the worker with: python manage.py qcluster
 Q_CLUSTER = {
     'name':       'PhishingOps',

@@ -117,7 +117,7 @@ class CourseListSerializer(serializers.ModelSerializer):
     class Meta:
         model  = Course
         fields = [
-            'id', 'title', 'description', 'thumbnail',
+            'id', 'title', 'caption', 'description', 'thumbnail',
             'is_published', 'total_lessons', 'has_quiz', 'created_at',
         ]
 
@@ -131,7 +131,7 @@ class CourseDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model  = Course
         fields = [
-            'id', 'title', 'description', 'thumbnail', 'is_published',
+            'id', 'title', 'caption', 'description', 'thumbnail', 'is_published',
             'total_lessons', 'has_quiz', 'lessons', 'quiz',
             'created_at', 'updated_at',
         ]
@@ -146,7 +146,7 @@ class CoursePublicSerializer(serializers.ModelSerializer):
     class Meta:
         model  = Course
         fields = [
-            'id', 'title', 'description', 'thumbnail',
+            'id', 'title', 'caption', 'description', 'thumbnail',
             'total_lessons', 'lessons', 'quiz',
         ]
 
