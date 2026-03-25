@@ -225,4 +225,22 @@ export const apiService = {
         })
         return response.data
     },
+
+    // Add this inside your apiService object
+    uploadCsv: async (campaignId: string | number, file: File) => {
+        const formData = new FormData()
+        formData.append('csv_file', file)
+
+        // Replace `axiosInstance` with whatever base Axios client you use
+        const response = await apiClient.post(
+            `/campaigns/${campaignId}/targets/upload_csv/`,
+            formData,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            }
+        )
+        return response.data // Returns { created: int, skipped: int } based on your Django code
+    },
 }

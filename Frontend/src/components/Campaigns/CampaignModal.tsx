@@ -1,15 +1,22 @@
 import DefaultButton from '../DefaultButton.tsx'
 import TextInput from '../TextInput.tsx'
-import type { Campaign } from '../../types/models.ts'
-import { useState } from 'react'
+import type { EmailTemplate, Campaign } from '../../types/models.ts'
+import { useState, useEffect } from 'react'
+import { apiService } from '../../services/userService.ts'
+import TextField from '../TextField.tsx'
 
-// 2. Add your Campaign type here or import it
 interface CampaignModalProps {
     isOpen: boolean
     onClose: () => void
     mode: 'create' | 'edit'
     initialData?: Campaign | null
-    onSave: (campaign: Campaign) => void
+    onSave: (campaign: Partial<Campaign>, file: File | null) => void
+}
+
+const getInitialDate = (dateString?: string | null) => {
+    if (!dateString) return ''
+    // Slices the string to keep only 'YYYY-MM-DDThh:mm'
+    return new Date(dateString).toISOString().slice(0, 16)
 }
 
 function CampaignModal({
@@ -20,36 +27,71 @@ function CampaignModal({
     onSave,
 }: CampaignModalProps) {
     const [name, setName] = useState(initialData?.name || '')
-    const [status, setStatus] = useState(
-        initialData?.status?.toLowerCase() || ''
+    const [description, setDescription] = useState(
+        initialData?.description || ''
     )
-    const [date, setDate] = useState(initialData?.date || '')
-    const [target, setTarget] = useState(initialData?.target || '')
-    const [template, setTemplate] = useState(initialData?.template || '')
+    const [status, setStatus] = useState(
+        initialData?.status?.toLowerCase() || 'Draft'
+    )
+    const [date, setDate] = useState(getInitialDate(initialData?.scheduled_at))
+    const [selectedTemplateId, setSelectedTemplateId] = useState<string>(
+        initialData?.email_template
+            ? String(initialData.email_template_name)
+            : ''
+    )
+    const [availableTemplates, setAvailableTemplates] = useState<
+        EmailTemplate[]
+    >([])
+    const [isLoadingTemplates, setIsLoadingTemplates] = useState(false)
+    const [file, setFile] = useState<File | null>(null)
     const [error, setError] = useState('')
+
+    useEffect(() => {
+        if (!isOpen) return
+
+        const fetchTemplates = async () => {
+            setIsLoadingTemplates(true)
+            try {
+                // Assuming your endpoint for templates is 'templates' or 'email-templates'
+                // Update this string to match your exact DRF route!
+                const data = await apiService.getAll<EmailTemplate>('templates')
+                setAvailableTemplates(data)
+            } catch (err) {
+                console.error('Failed to load templates:', err)
+            } finally {
+                setIsLoadingTemplates(false)
+            }
+        }
+
+        fetchTemplates()
+    }, [isOpen])
 
     const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault()
         setError('')
 
-        if (!name || !status || !date || !target || !template) {
-            setError('All fields are required!')
+        if (!name || !status || !date) {
+            setError('Name, status, and date are required!')
+            return
+        }
+        if (mode === 'create' && !file) {
+            setError('A target CSV file is required to create a campaign.')
             return
         }
 
-        // 2. Package all the current form states into one object
-        const campaignDataToSave = {
-            id: initialData?.id || Date.now(), // Generate a fake ID if creating
+        const campaignDataToSave: Partial<Campaign> = {
+            ...(initialData && { id: initialData.id }),
             name,
             status,
-            date,
-            target,
-            completion: initialData?.completion || 0, // Keep existing completion or default to 0
-            template,
+            scheduled_at: date,
+            // Django expects the foreign key ID for the relationship
+            email_template: selectedTemplateId
+                ? Number(selectedTemplateId)
+                : null,
         }
 
         // 3. Send it back up to the parent!
-        onSave(campaignDataToSave)
+        onSave(campaignDataToSave, file)
         onClose()
     }
 
@@ -77,7 +119,6 @@ function CampaignModal({
 
                 {error && <p className="text-[#DC3545] text-sm m-0">{error}</p>}
 
-                {/* Make sure your TextInput component accepts the 'disabled' prop! */}
                 <TextInput
                     label="Name"
                     type="text"
@@ -87,6 +128,15 @@ function CampaignModal({
                     className="w-full"
                 />
 
+                <TextField
+                    label="Description"
+                    placeholder="Campaign Description"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    className="w-full"
+                    rows={5}
+                />
+
                 <label>
                     <span className="font-bold text-[#121212]">Status</span>
                     <br />
@@ -94,7 +144,7 @@ function CampaignModal({
                         name="status"
                         value={status}
                         onChange={(e) => setStatus(e.target.value)}
-                        className="text-[#4A4A4A] bg-#F8F9FA border-2 border-[#DDE2E5] focus:outline-[#024C89] active:outline-[#024C89] w-full max-w-2xl rounded-[16px] px-4 py-2 disabled:bg-gray-200 disabled:opacity-70"
+                        className="text-[#4A4A4A] bg-#F8F9FA border-2 border-[#DDE2E5] focus:outline-[#024C89] active:outline-[#024C89] w-full max-w-2xl rounded-4xl px-4 py-1 disabled:bg-gray-200 disabled:opacity-70"
                     >
                         <option value="" disabled hidden>
                             -- Select an option --
@@ -108,29 +158,53 @@ function CampaignModal({
 
                 <TextInput
                     label="Date"
-                    type="date"
+                    type="datetime-local"
                     placeholder="Campaign Date"
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
                     className="w-full"
                 />
 
-                <TextInput
+                {/* <TextInput
                     label="Target"
                     type="text"
                     placeholder="Campaign Target"
                     value={target}
                     onChange={(e) => setTarget(e.target.value)}
                     className="w-full"
-                />
+                /> */}
+
+                <label className="flex flex-col gap-1">
+                    <span className="text-[#121212] font-medium">
+                        Email Template
+                    </span>
+                    <select
+                        name="template"
+                        value={selectedTemplateId}
+                        onChange={(e) => setSelectedTemplateId(e.target.value)}
+                        disabled={isLoadingTemplates}
+                        className="text-[#4A4A4A] bg-#F8F9FA border-2 border-[#DDE2E5] focus:outline-[#024C89] active:outline-[#024C89] w-full rounded-4xl px-4 py-2 disabled:bg-gray-200 disabled:opacity-70"
+                    >
+                        <option value="">
+                            {isLoadingTemplates
+                                ? 'Loading templates...'
+                                : '-- Select a Template --'}
+                        </option>
+
+                        {availableTemplates.map((item) => (
+                            <option key={item.id} value={item.id}>
+                                {item.name}
+                            </option>
+                        ))}
+                    </select>
+                </label>
 
                 <TextInput
-                    label="Template"
-                    type="text"
-                    placeholder="Email Template"
-                    value={template}
-                    onChange={(e) => setTemplate(e.target.value)}
-                    className="w-full"
+                    label="Upload Targets CSV"
+                    type="file"
+                    accept=".csv"
+                    onChange={(e) => setFile(e.target.files?.[0] || null)}
+                    className="w-full cursor-pointer"
                 />
 
                 <DefaultButton

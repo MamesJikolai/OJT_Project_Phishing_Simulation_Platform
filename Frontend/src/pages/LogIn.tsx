@@ -20,14 +20,16 @@ function LogIn() {
         setIsSubmitting(true)
 
         try {
-            const response = await apiService.login({ username, password })
+            // Authenticate (Make sure this apiService method saves the tokens to localStorage!)
+            await apiService.login({ username, password })
 
-            // Grab the user object (it already has the correct role from Django!)
-            const fetchedUser = response.user
+            // Fetch the COMPLETE profile
+            const fullUserProfile = await apiService.getMe()
 
-            // Pass it directly to context
-            login(fetchedUser)
+            // Pass the full, rich user object to your context
+            login(fullUserProfile)
 
+            // Send them to the dashboard
             navigate('/dashboard')
         } catch (err: any) {
             console.error('Failed to log in:', err)

@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import type { Lesson } from '../../types/models'
 
 interface LessonCardProps {

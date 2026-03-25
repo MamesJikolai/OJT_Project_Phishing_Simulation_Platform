@@ -4,12 +4,14 @@ import Message from '../../components/Message.tsx'
 import NavigateButton from '../../components/NavigateButton.tsx'
 import type { ColumnDef } from '@tanstack/react-table'
 import TableComponent from '../../components/Tables/TableComponent.tsx'
-import type { Course } from '../../types/models.ts'
+import type { AnalyticsResponse, Course } from '../../types/models.ts'
 import type { Campaign } from '../../types/models.ts'
 import { apiService } from '../../services/userService.ts'
 import { formatDate } from '../../utils/formatters.ts'
+import AnalyticsCards from '../../components/Analytics/AnalyticsCards.tsx'
 
 function Dashboard() {
+    const [analyticsData, setAnalyticsData] = useState<AnalyticsResponse>()
     const [courseData, setCourseData] = useState<Course[]>([])
     const [campaignData, setCampaignData] = useState<Campaign[]>([])
     const [isLoading, setIsLoading] = useState(true)
@@ -18,10 +20,15 @@ function Dashboard() {
         const fetchTemplate = async () => {
             try {
                 setIsLoading(true)
+                const fetchedAnalyticsData =
+                    await apiService.getSingleton<AnalyticsResponse>(
+                        'analytics'
+                    )
                 const fetchedCampaignData =
                     await apiService.getAll<Campaign>('campaigns')
                 const fetchedCoursesData =
                     await apiService.getAll<Course>('courses')
+                setAnalyticsData(fetchedAnalyticsData)
                 setCampaignData(fetchedCampaignData)
                 setCourseData(fetchedCoursesData)
             } catch (err) {
@@ -34,13 +41,36 @@ function Dashboard() {
         fetchTemplate()
     }, [])
 
+    const summaryMetrics = analyticsData
+        ? [
+              {
+                  label: 'Total Campaigns',
+                  value: analyticsData.summary.total_campaigns,
+              },
+              { label: 'Total Sent', value: analyticsData.summary.total_sent },
+              {
+                  label: 'Total Clicked',
+                  value: analyticsData.summary.total_clicked,
+              },
+              {
+                  label: 'Total Completed',
+                  value: analyticsData.summary.total_completed,
+              },
+              { label: 'Click Rate', value: analyticsData.summary.click_rate },
+              {
+                  label: 'Completion Rate',
+                  value: analyticsData.summary.completion_rate,
+              },
+          ]
+        : []
+
     // Define table columns to pass into table
     const columns: ColumnDef<Campaign, any>[] = [
-        { accessorKey: 'name', header: 'Name' },
+        { accessorKey: 'name', header: 'Name', enableColumnFilter: false },
         {
             accessorKey: 'status',
             header: 'Status',
-            meta: { filterVariant: 'select' },
+            enableColumnFilter: false,
         },
         {
             accessorKey: 'total_targets',
@@ -50,6 +80,7 @@ function Dashboard() {
         {
             accessorKey: 'email_template_name', // Changed from 'template'
             header: 'Template',
+            enableColumnFilter: false,
             cell: (info) =>
                 info.getValue() || (
                     <span className="text-gray-400 italic">None</span>
@@ -103,55 +134,49 @@ function Dashboard() {
         <div className="flex flex-col items-start p-8 overflow-x-hidden max-w-full">
             <Message text="Dashboard" />
 
-            <h2>Courses</h2>
-            {isLoading ? (
-                <div className="py-8 text-gray-500 animate-pulse">
-                    Loading Courses...
-                </div>
-            ) : (
-                <div className="flex justify-start w-full overflow-x-auto gap-4 pb-4">
-                    {courseData.slice(0, 5).map((item, index) => (
-                        <CourseCard item={item} key={index} />
-                    ))}
-                </div>
-            )}
-            <NavigateButton
-                label="View All"
-                href="/courses"
-                customCSS="mb-[32px]"
-            />
-
-            <h2>Analytics</h2>
-            <div className="flex justify-start w-full overflow-x-auto gap-4 pb-4">
-                <div className="bg-red-200 w-[300px] h-[300px] shrink-0"></div>
-                <div className="bg-red-200 w-[300px] h-[300px] shrink-0"></div>
-                <div className="bg-red-200 w-[300px] h-[300px] shrink-0"></div>
-                <div className="bg-red-200 w-[300px] h-[300px] shrink-0"></div>
-                <div className="bg-red-200 w-[300px] h-[300px] shrink-0"></div>
+            <div className="flex flex-col gap-8">
+                {analyticsData && (
+                    <div className="flex flex-row flex-wrap gap-4">
+                        {summaryMetrics.map((metric, index) => (
+                            <AnalyticsCards
+                                key={index}
+                                text={metric.label}
+                                item={metric.value}
+                            />
+                        ))}
+                    </div>
+                )}
+                {/* <div className="flex justify-start w-full overflow-x-auto gap-4 pb-4">
+                    <div className="bg-red-200 w-[300px] h-[300px] shrink-0"></div>
+                    <div className="bg-red-200 w-[300px] h-[300px] shrink-0"></div>
+                    <div className="bg-red-200 w-[300px] h-[300px] shrink-0"></div>
+                    <div className="bg-red-200 w-[300px] h-[300px] shrink-0"></div>
+                    <div className="bg-red-200 w-[300px] h-[300px] shrink-0"></div>
+                </div> */}
+                {isLoading ? (
+                    <div className="py-8 text-gray-500 animate-pulse">
+                        Loading Courses...
+                    </div>
+                ) : (
+                    <div className="flex justify-start w-full overflow-x-auto gap-4 pb-4">
+                        {courseData.slice(0, 5).map((item, index) => (
+                            <CourseCard item={item} key={index} />
+                        ))}
+                    </div>
+                )}
+                {isLoading ? (
+                    <div className="py-8 text-gray-500 animate-pulse">
+                        Loading Campaigns...
+                    </div>
+                ) : (
+                    <TableComponent
+                        data={campaignData.slice(0, 5)}
+                        columns={columns}
+                        isPaginated={false}
+                        customTablePadding="!py-2 !px-1"
+                    />
+                )}
             </div>
-            <NavigateButton
-                label="View All"
-                href="/analytics"
-                customCSS="mb-[32px]"
-            />
-
-            <h2>Campaign</h2>
-            {isLoading ? (
-                <div className="py-8 text-gray-500 animate-pulse">
-                    Loading Campaigns...
-                </div>
-            ) : (
-                <TableComponent
-                    data={campaignData.slice(0, 5)}
-                    columns={columns}
-                    isPaginated={false}
-                />
-            )}
-            <NavigateButton
-                label="View All"
-                href="/campaigns"
-                customCSS="mb-[32px]"
-            />
         </div>
     )
 }

@@ -23,22 +23,21 @@ function Campaigns() {
         null
     )
 
-    useEffect(() => {
-        const fetchCampaign = async () => {
-            try {
-                setIsLoading(true)
-                const fetchedData =
-                    await apiService.getAll<Campaign>('campaigns')
-                setData(fetchedData)
-            } catch (err) {
-                console.error('Failed to load campaign:', err)
-            } finally {
-                setIsLoading(false)
-            }
+    const fetchCampaign = useCallback(async () => {
+        try {
+            setIsLoading(true)
+            const fetchedData = await apiService.getAll<Campaign>('campaigns')
+            setData(fetchedData)
+        } catch (err) {
+            console.error('Failed to load campaign:', err)
+        } finally {
+            setIsLoading(false)
         }
-
-        fetchCampaign()
     }, [])
+
+    useEffect(() => {
+        fetchCampaign()
+    }, [fetchCampaign])
 
     const openCreateModal = useCallback(() => {
         setModalMode('create')
@@ -68,33 +67,47 @@ function Campaigns() {
         }
     }, [])
 
-    const handleSaveCampaign = async (campaignData: Campaign) => {
+    const handleSaveCampaign = async (
+        campaignData: Partial<Campaign>,
+        file: File | null
+    ) => {
         try {
             if (modalMode === 'edit') {
+                // Update the campaign
                 const updatedCampaign = await apiService.update<Campaign>(
                     'campaigns',
-                    campaignData.id,
+                    campaignData.id!,
                     campaignData
                 )
-                setData((prev: Campaign[]) =>
-                    prev.map((item) =>
-                        item.id === updatedCampaign.id ? updatedCampaign : item
-                    )
-                )
+
+                // If they selected a new file during the edit, upload it
+                if (file) {
+                    await apiService.uploadCsv(updatedCampaign.id, file)
+                }
+
+                // Refresh the table to get the updated targets count
+                fetchCampaign()
             } else if (modalMode === 'create') {
+                // Create the campaign
                 const newCampaign = await apiService.create<Campaign>(
                     'campaigns',
                     campaignData
                 )
-                setData((prevData: Campaign[]) => [newCampaign, ...prevData])
+
+                // Immediately upload the CSV using the brand new ID
+                if (file) {
+                    await apiService.uploadCsv(newCampaign.id, file)
+                }
+
+                // Refresh the table to get the new campaign with its target count
+                fetchCampaign()
             }
         } catch (err) {
-            console.error('Failed to save campaign:', err)
+            console.error('Failed to save campaign or upload CSV:', err)
+            alert('An error occurred while saving the campaign.')
         }
     }
 
-    // 3. Wrapping columns in useMemo is a best practice for TanStack Table
-    // to prevent unnecessary re-renders when data changes.
     const columns = useMemo<ColumnDef<Campaign, any>[]>(
         () => [
             { accessorKey: 'name', header: 'Name' },
@@ -134,8 +147,6 @@ function Campaigns() {
                 enableColumnFilter: false,
                 cell: (info) => {
                     const numericValue = info.getValue() as number
-                    // We inverted the colors here!
-                    // High click rate = Bad (Red), Low click rate = Good (Green)
                     let barColor = 'bg-[#DC3545]'
                     if (numericValue <= 20) {
                         barColor = 'bg-[#28A745]'
