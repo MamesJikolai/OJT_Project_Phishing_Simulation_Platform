@@ -11,7 +11,7 @@ function Message({ text, subtitle }: MessageProps) {
             >
                 {text}
             </h1>
-            <p className="text-[12px] mb-4">{subtitle}</p>
+            {subtitle ? <p className="text-[12px] mb-4">{subtitle}</p> : ''}
         </>
     )
 }

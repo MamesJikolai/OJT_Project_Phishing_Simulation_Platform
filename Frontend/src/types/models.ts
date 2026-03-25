@@ -4,6 +4,7 @@ export interface Accounts {
     email: string
     first_name: string
     last_name: string
+    role: string
     is_staff: boolean
     is_superuser: boolean
     date_joined: string
@@ -13,22 +14,28 @@ export interface Campaign {
     id: number
     name: string
     description: string
-    status: string
+    status: 'draft' | 'paused' | 'running' | 'completed' | string
     email_template: number | null
-    email_template_name: string | null
+    email_template_name: string
     assigned_course: number | null
-    assigned_course_title: string | null
+    assigned_course_title: string
+    smtp_host: string
+    smtp_port: number
+    smtp_user: string
+    smtp_password?: string
+    smtp_use_tls: boolean
+    smtp_use_ssl: boolean
     from_email: string
-    created_by_username: string | null
+    scheduled_at: string
+    created_at: string
+    launched_at: string
+    completed_at: string
     total_targets: number
     emails_sent: number
     links_clicked: number
     lms_completed: number
     click_rate: number
-    created_at: string
-    launched_at: string | null
-    completed_at: string | null
-    scheduled_at: string | null
+    targets: User[]
 }
 
 export interface Lesson {
@@ -74,7 +81,7 @@ export interface EmailTemplate {
 
 export interface User {
     id: number
-    campaign: string
+    campaign: number
     campaign_name: string
     email: string
     full_name: string
@@ -131,4 +138,19 @@ export interface SMTPTest {
     smtp_use_ssl: boolean
     from_email: string
     to_email: string
+}
+
+export interface Analytics {
+    total_campaigns: number
+    total_sent: number
+    total_clicked: number
+    total_completed: number
+    click_rate: number
+    completion_rate: number
+}
+
+export interface AnalyticsResponse {
+    summary: Analytics
+    campaigns: any[]
+    department_stats: any[]
 }

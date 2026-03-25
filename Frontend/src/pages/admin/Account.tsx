@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Message from '../../components/Message'
 import TextInput from '../../components/TextInput'
@@ -7,20 +7,27 @@ import { apiService } from '../../services/userService'
 import { useAuth } from '../../context/AuthContext'
 
 function Account() {
-    const { user, login, logout } = useAuth() // 1. Grab user data and functions from context
-    const navigate = useNavigate()
-
-    const [error, setError] = useState('')
-    const [successMessage, setSuccessMessage] = useState('')
-    const [isSubmitting, setIsSubmitting] = useState(false)
-
-    // 2. Pre-fill state with context data using Django's snake_case variable names
+    const { user, login, logout } = useAuth() // Grab user data and functions from context
     const [userData, setUserData] = useState({
         first_name: user?.first_name || '',
         last_name: user?.last_name || '',
         email: user?.email || '',
-        // organization: '', // Note: Django's default User model lacks this field!
     })
+    const [error, setError] = useState('')
+    const [successMessage, setSuccessMessage] = useState('')
+    const [isSubmitting, setIsSubmitting] = useState(false)
+    const navigate = useNavigate()
+
+    // Pre-fill state with context data using Django's snake_case variable names
+    useEffect(() => {
+        if (user) {
+            setUserData({
+                first_name: user.first_name || '',
+                last_name: user.last_name || '',
+                email: user.email || '',
+            })
+        }
+    }, [user])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
@@ -43,10 +50,10 @@ function Account() {
         try {
             setIsSubmitting(true)
 
-            // 3. Send the PATCH request to Django
+            // Send the PATCH request to Django
             const updatedUser = await apiService.updateMe(userData)
 
-            // 4. Update the global context so the whole app knows the new name!
+            // Update the global context so the whole app knows the new name!
             login(updatedUser)
 
             setSuccessMessage('Account updated successfully!')
@@ -66,7 +73,7 @@ function Account() {
     }
 
     const handleLogout = () => {
-        // 5. Use context logout and React Router navigate
+        // Use context logout and React Router navigate
         logout()
         navigate('/home')
     }
@@ -96,8 +103,7 @@ function Account() {
                                 <span
                                     className={`${handleRoleColor()} text-[#F8F9FA] px-3 py-1 rounded-xl uppercase`}
                                 >
-                                    {user.role ||
-                                        (user.is_staff ? 'Admin' : 'User')}
+                                    {user.role}
                                 </span>
                             </p>
                         </div>
@@ -119,7 +125,7 @@ function Account() {
 
                         <TextInput
                             label="First Name"
-                            name="first_name" // Updated to match Django
+                            name="first_name"
                             type="text"
                             placeholder="First Name"
                             value={userData.first_name}
@@ -129,7 +135,7 @@ function Account() {
                         />
                         <TextInput
                             label="Last Name"
-                            name="last_name" // Updated to match Django
+                            name="last_name"
                             type="text"
                             placeholder="Last Name"
                             value={userData.last_name}

@@ -29,12 +29,14 @@ interface TableComponentProps<TData> {
     data: TData[]
     columns: ColumnDef<TData, any>[]
     isPaginated?: true | false
+    customTablePadding?: string
 }
 
 export default function TableComponent<TData>({
     data,
     columns,
     isPaginated = true,
+    customTablePadding = '',
 }: TableComponentProps<TData>) {
     const [columnFilters, setColumnFilters] =
         React.useState<ColumnFiltersState>([])
@@ -115,7 +117,7 @@ export default function TableComponent<TData>({
                                     return (
                                         <td
                                             key={cell.id}
-                                            className="p-2 border-b"
+                                            className={`${customTablePadding}`}
                                         >
                                             <div
                                                 className={getCellClasses(cell)}

@@ -6,24 +6,16 @@ import { useState } from 'react'
 interface UserModalProps {
     isOpen: boolean
     onClose: () => void
-    mode: 'create' | 'edit'
     initialData?: User | null
     // 1. FIXED: Use Partial<User> here so TypeScript stops yelling!
     onSave: (user: Partial<User>) => void
 }
 
-function UserModal({
-    isOpen,
-    onClose,
-    mode,
-    initialData,
-    onSave,
-}: UserModalProps) {
+function UserModal({ isOpen, onClose, initialData, onSave }: UserModalProps) {
     const [full_name, setFullName] = useState(initialData?.full_name || '')
     const [email, setEmail] = useState(initialData?.email || '')
     const [department, setDepartment] = useState(initialData?.department || '')
     const [position, setPosition] = useState(initialData?.position || '')
-    const [campaign] = useState(initialData?.campaign_name || '')
 
     const [error, setError] = useState('')
 
@@ -31,7 +23,6 @@ function UserModal({
         e.preventDefault()
         setError('')
 
-        // 2. FIXED: Changed 'name' to 'full_name'
         if (!full_name || !email || !department) {
             setError('All fields are required!')
             return
@@ -43,7 +34,6 @@ function UserModal({
             email,
             department,
             position,
-            // (You usually don't need to send the campaign string back if it's read-only/disabled)
         }
 
         onSave(userDataToSave)
@@ -67,9 +57,7 @@ function UserModal({
                     &times;
                 </button>
 
-                <h2 className="mb-2">
-                    {mode === 'create' ? 'Create User' : 'Edit User'}
-                </h2>
+                <h2 className="mb-2">Edit User</h2>
 
                 {error && <p className="text-[#DC3545] text-sm m-0">{error}</p>}
 
@@ -85,7 +73,7 @@ function UserModal({
                 <TextInput
                     label="Email"
                     type="email"
-                    placeholder="User Email"
+                    placeholder="Full Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-full"
@@ -109,19 +97,11 @@ function UserModal({
                     className="w-full"
                 />
 
-                <TextInput
-                    label="Campaign"
-                    type="text"
-                    placeholder="Campaign"
-                    value={campaign}
-                    className="w-full opacity-60 "
-                />
-
                 <DefaultButton
                     type="submit"
                     className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA] self-center mt-4 px-8"
                 >
-                    {mode === 'create' ? 'Create' : 'Save Changes'}
+                    Save Changes
                 </DefaultButton>
             </form>
         </div>

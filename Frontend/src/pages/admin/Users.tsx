@@ -7,39 +7,36 @@ import { apiService } from '../../services/userService.ts'
 import UserModal from '../../components/Users/UserModal.tsx'
 import DefaultButton from '../../components/DefaultButton.tsx'
 import { formatDate } from '../../utils/formatters.ts'
+import CsvUploadModal from '../../components/Users/CSVModal.tsx'
 
 function Users() {
     const [data, setData] = useState<User[]>([])
     const [isLoading, setIsLoading] = useState(true)
 
     const [isModalOpen, setIsModalOpen] = useState(false)
-    const [modalMode, setModalMode] = useState<'create' | 'edit'>('create')
+    const [isCsvModalOpen, setIsCsvModalOpen] = useState(false)
     const [selectedUser, setSelectedCUser] = useState<User | null>(null)
 
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                setIsLoading(true)
-                const fetchedData = await apiService.getAll<User>('targets')
-                setData(fetchedData)
-            } catch (err) {
-                console.error('Failed to load user:', err)
-            } finally {
-                setIsLoading(false)
-            }
+    const fetchUser = useCallback(async () => {
+        try {
+            setIsLoading(true)
+            const fetchedData = await apiService.getAll<User>('targets')
+
+            const sortedData = fetchedData.sort((a, b) => b.id - a.id)
+
+            setData(sortedData)
+        } catch (err) {
+            console.error('Failed to load user:', err)
+        } finally {
+            setIsLoading(false)
         }
+    }, [])
 
+    useEffect(() => {
         fetchUser()
-    }, [])
-
-    const openCreateModal = useCallback(() => {
-        setModalMode('create')
-        setSelectedCUser(null)
-        setIsModalOpen(true)
-    }, [])
+    }, [fetchUser])
 
     const openEditModal = useCallback((userData: User) => {
-        setModalMode('edit')
         setSelectedCUser(userData)
         setIsModalOpen(true)
     }, [])
@@ -63,23 +60,17 @@ function Users() {
 
     const handleSaveUser = async (userData: Partial<User>) => {
         try {
-            if (modalMode === 'edit') {
-                const updatedUser = await apiService.update<User>(
-                    'targets',
-                    userData.id!,
-                    userData
-                )
+            const updatedUser = await apiService.update<User>(
+                'targets',
+                userData.id!,
+                userData
+            )
 
-                setData((prev: User[]) =>
-                    prev.map((item) =>
-                        item.id === updatedUser.id ? updatedUser : item
-                    )
+            setData((prev: User[]) =>
+                prev.map((item) =>
+                    item.id === updatedUser.id ? updatedUser : item
                 )
-            } else if (modalMode === 'create') {
-                const newUser = await apiService.create<User>('users', userData)
-
-                setData((prev: User[]) => [newUser, ...prev])
-            }
+            )
         } catch (err) {
             console.error('Failed to save user:', err)
         }
@@ -162,9 +153,15 @@ function Users() {
 
             <DefaultButton
                 className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA] self-start mb-4"
-                onClick={openCreateModal}
-                children="Add User"
-            />
+                onClick={() => {
+                    console.log(
+                        'Button clicked! isCsvModalOpen should be true now.'
+                    )
+                    setIsCsvModalOpen(true)
+                }}
+            >
+                Upload CSV
+            </DefaultButton>
 
             {isLoading ? (
                 <div className="py-8 text-gray-500 animate-pulse">
@@ -179,9 +176,16 @@ function Users() {
                     key={selectedUser ? selectedUser.id : 'create-modal'}
                     isOpen={isModalOpen}
                     onClose={() => setIsModalOpen(false)}
-                    mode={modalMode}
                     initialData={selectedUser}
                     onSave={handleSaveUser} // 3. Pass the function down to the modal!
+                />
+            )}
+
+            {isCsvModalOpen && (
+                <CsvUploadModal
+                    isOpen={isCsvModalOpen}
+                    onClose={() => setIsCsvModalOpen(false)}
+                    onUploadSuccess={fetchUser}
                 />
             )}
         </div>
