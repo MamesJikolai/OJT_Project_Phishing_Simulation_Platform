@@ -134,7 +134,7 @@ function Dashboard() {
         <div className="flex flex-col items-start p-8 overflow-x-hidden max-w-full">
             <Message text="Dashboard" />
 
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 max-w-full">
                 <div className="pb-4">
                     {analyticsData && (
                         <div className="flex flex-row flex-wrap gap-4">

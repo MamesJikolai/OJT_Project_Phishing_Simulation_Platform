@@ -3,6 +3,7 @@ import TextInput from '../TextInput.tsx'
 import type { EmailTemplate } from '../../types/models.ts'
 import { useState, useEffect } from 'react'
 import TextField from '../TextField.tsx'
+import { useAuth } from '../../context/AuthContext.tsx'
 
 interface TemplateModalProps {
     isOpen: boolean
@@ -19,8 +20,9 @@ function TemplateModal({
     initialData,
     onSave,
 }: TemplateModalProps) {
+    const { user } = useAuth()
     const [name, setName] = useState(initialData?.name || '')
-    const [author, setAuthor] = useState(initialData?.created_by || '')
+    const [author, setAuthor] = useState(user?.username)
     const [sender_name, setSenderName] = useState(
         initialData?.sender_name || ''
     )
@@ -95,7 +97,7 @@ function TemplateModal({
                     value={author}
                     onChange={(e) => setAuthor(e.target.value)}
                     className="w-full"
-                    disabled={isViewOnly || mode === 'edit'}
+                    disabled
                 />
 
                 <TextInput

@@ -24,6 +24,10 @@ import landing from './icons/icon-landing-default.png'
 import landingActive from './icons/icon-landing-active.png'
 import template from './icons/icon-template-default.png'
 import templateActive from './icons/icon-template-active.png'
+import iconExpand from './icons/icon-card_expand.png'
+import iconCollapse from './icons/icon-card_collapse.png'
+import deleteDefault from './icons/icon-delete-default.png'
+import deleteHover from './icons/icon-delete-hover.png'
 
 export const Icons = {
     home,
@@ -52,4 +56,8 @@ export const Icons = {
     landingActive,
     template,
     templateActive,
+    iconExpand,
+    iconCollapse,
+    deleteDefault,
+    deleteHover,
 }

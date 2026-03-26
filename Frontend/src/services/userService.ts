@@ -75,13 +75,18 @@ export const apiService = {
     update: async <T>(
         resource: string,
         id: number,
-        data: Partial<T>
+        data: Partial<T>,
+        method: 'PUT' | 'PATCH' = 'PUT'
     ): Promise<T> => {
         if (USE_MOCK_DATA) {
             console.log(`[MOCK PUT] to ${resource}/${id}:`, data)
             return { id, ...data } as T
         }
-        const response = await apiClient.put<T>(`${resource}/${id}/`, data)
+        const response = await apiClient.request<T>({
+            url: `${resource}/${id}/`,
+            method: method,
+            data: data,
+        })
         return response.data
     },
 

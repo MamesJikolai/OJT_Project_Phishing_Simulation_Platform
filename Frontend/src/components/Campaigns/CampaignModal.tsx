@@ -166,8 +166,8 @@ function CampaignModal({
                             -- Select an option --
                         </option>
                         <option value="Draft">Draft</option>
-                        <option value="Archived">Archived</option>
-                        <option value="Cancelled">Cancelled</option>
+                        <option value="Running">Running</option>
+                        <option value="Paused">Paused</option>
                         <option value="Completed">Completed</option>
                     </select>
                 </label>

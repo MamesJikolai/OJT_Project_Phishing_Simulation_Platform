@@ -10,6 +10,7 @@ interface CourseCardProps {
     userRole?: string
     openEditModal?: () => void
     handleDeleteCourse?: () => void
+    handlePublishCourse?: () => void
 }
 
 function CourseCard({
@@ -17,6 +18,7 @@ function CourseCard({
     customCSS,
     openEditModal,
     handleDeleteCourse,
+    handlePublishCourse,
 }: CourseCardProps) {
     // Grab the logged-in user directly from context
     const { user } = useAuth()
@@ -57,10 +59,10 @@ function CourseCard({
             {userRole === 'admin' && (
                 <div>
                     <SmallButton
-                        disabled={item.is_published}
-                        className="bg-[#024C89] text-[#F8F9FA] hover:bg-[#3572A1]"
+                        onClick={handlePublishCourse}
+                        className={`${item.is_published ? 'border-2 border-[#DC3545] text-[#DC3545] hover:bg-[#DC3545] hover:text-[#F8F9FA]' : 'text-[#F8F9FA] bg-[#024C89] hover:bg-[#3572A1]'}`}
                     >
-                        {item.is_published ? 'Published' : 'Publish'}
+                        {item.is_published ? 'Unpublish' : 'Publish'}
                     </SmallButton>
                     <div className="flex flex-row gap-4">
                         <SmallButton

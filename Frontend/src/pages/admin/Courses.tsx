@@ -88,6 +88,25 @@ function Courses() {
         }
     }
 
+    const handlePublishCourse = async (courseData: Course) => {
+        try {
+            const updatedPublish = await apiService.update<Course>(
+                'courses',
+                courseData.id,
+                { is_published: !courseData.is_published },
+                'PATCH'
+            )
+
+            setData((prev: Course[]) =>
+                prev.map((item) =>
+                    item.id === updatedPublish.id ? updatedPublish : item
+                )
+            )
+        } catch (err) {
+            console.error('Failed to publish course:', err)
+        }
+    }
+
     return (
         <div className="flex flex-col items-start m-8">
             <Message text="Courses" />
@@ -107,12 +126,15 @@ function Courses() {
                 </div>
             ) : (
                 <div className="flex flex-row flex-wrap justify-center gap-[32px] drop-shadow-md">
-                    {data.map((item, index) => (
+                    {data.map((item) => (
                         <CourseCard
                             item={item}
-                            key={index}
+                            key={item.id}
                             openEditModal={() => openEditModal(item)}
-                            handleDeleteCourse={() => handleDeleteCourse}
+                            handleDeleteCourse={() => handleDeleteCourse(item)}
+                            handlePublishCourse={() =>
+                                handlePublishCourse(item)
+                            }
                         />
                     ))}
                 </div>
