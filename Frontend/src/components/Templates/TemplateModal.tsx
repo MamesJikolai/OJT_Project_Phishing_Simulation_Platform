@@ -28,6 +28,9 @@ function TemplateModal({
     )
     const [subject, setSubject] = useState(initialData?.subject || '')
     const [body_html, setBody] = useState(initialData?.body_html || '')
+    const [company_name, setCompanyName] = useState(
+        initialData?.company_name || ''
+    )
     const [error, setError] = useState('')
 
     const isViewOnly = mode === 'view'
@@ -48,6 +51,7 @@ function TemplateModal({
             sender_name,
             subject,
             body_html,
+            company_name,
             created_at: initialData?.created_at || new Date().toLocaleString(),
         }
 
@@ -106,6 +110,16 @@ function TemplateModal({
                     placeholder="Sender Name"
                     value={sender_name}
                     onChange={(e) => setSenderName(e.target.value)}
+                    className="w-full"
+                    disabled={isViewOnly}
+                />
+
+                <TextInput
+                    label="Company Name"
+                    type="text"
+                    placeholder="Dummy Company Name"
+                    value={company_name}
+                    onChange={(e) => setCompanyName(e.target.value)}
                     className="w-full"
                     disabled={isViewOnly}
                 />

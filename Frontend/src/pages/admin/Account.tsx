@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Message from '../../components/Message'
 import TextInput from '../../components/TextInput'
 import DefaultButton from '../../components/DefaultButton'
 import { apiService } from '../../services/userService'
 import { useAuth } from '../../context/AuthContext'
+import ChangePasswordModal from '../../components/Account/ChangePasswordModal'
 
 function Account() {
     const { user, login, logout } = useAuth() // Grab user data and functions from context
@@ -16,6 +17,7 @@ function Account() {
     const [error, setError] = useState('')
     const [successMessage, setSuccessMessage] = useState('')
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const [isModalOpen, setIsModalOpen] = useState(false)
     const navigate = useNavigate()
 
     // Pre-fill state with context data using Django's snake_case variable names
@@ -28,6 +30,10 @@ function Account() {
             })
         }
     }, [user])
+
+    const openPasswordModal = useCallback(() => {
+        setIsModalOpen(true)
+    }, [])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
@@ -166,6 +172,7 @@ function Account() {
 
                     <DefaultButton
                         children="Change Password"
+                        onClick={openPasswordModal}
                         type="button"
                         className="text-[#024C89] border-2 border-[#024C89] hover:bg-[#024C89] hover:text-[#F8F9FA]"
                     />
@@ -178,6 +185,13 @@ function Account() {
                     />
                 </form>
             </div>
+
+            {isModalOpen && (
+                <ChangePasswordModal
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                />
+            )}
         </div>
     )
 }

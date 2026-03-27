@@ -69,14 +69,13 @@ export interface EmailTemplate {
     id: number
     name: string
     subject: string
-    sender_name: string // Django uses this instead of 'author'
-    body_html: string // Django uses this instead of 'body'
-    created_by?: number // The user ID (read-only from Django)
-    created_by_username?: string // The username (read-only from Django)
-    created_at: string // Django uses this instead of 'created'
+    sender_name: string
+    body_html: string
+    created_by?: number
+    created_by_username?: string
+    company_name: string
+    created_at: string
     updated_at?: string
-    // Note: I removed 'link' because it is not in your Django EmailTemplate model.
-    // Usually, the phishing link is injected dynamically when a Campaign is launched.
 }
 
 export interface User {

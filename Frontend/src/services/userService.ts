@@ -188,6 +188,11 @@ export const apiService = {
         return response.data
     },
 
+    changePassword: async (data: any) => {
+        const response = await apiClient.post('auth/change-password/', data)
+        return response.data
+    },
+
     /**
      * AUTH: Logs the user out.
      */
