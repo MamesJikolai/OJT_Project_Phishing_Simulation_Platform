@@ -78,9 +78,8 @@ def _plain_to_html(text: str) -> str:
         '<!DOCTYPE html><html><head><meta charset="utf-8"></head>'
         '<body style="font-family:Arial,sans-serif;font-size:14px;'
         'line-height:1.6;color:#333333;margin:0;padding:20px;">'
-        '<div style="max-width:600px;margin:0 auto;">'
     )
-    footer = '</div></body></html>'
+    footer = '</body></html>'
     return header + body_content + footer
 
 
@@ -93,8 +92,8 @@ def render_body(body_html: str, target, campaign) -> str:
     variable substitution). If it is plain text, newlines are
     converted to <br> / <p> tags so the formatting is preserved.
     """
-    if campaign.created_by:
-        company = campaign.created_by.get_full_name() or campaign.created_by.username
+    if campaign.email_template and campaign.email_template.company_name:
+        company = campaign.email_template.company_name
     else:
         company = 'Your Company'
 

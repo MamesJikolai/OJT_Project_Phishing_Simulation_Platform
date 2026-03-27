@@ -178,14 +178,14 @@ class EmailTemplateAdminForm(forms.ModelForm):
 @admin.register(EmailTemplate)
 class EmailTemplateAdmin(admin.ModelAdmin):
     form = EmailTemplateAdminForm
-    list_display  = ('name', 'sender_name', 'subject', 'created_by', 'created_at')
+    list_display  = ('name', 'sender_name', 'subject', 'company_name', 'created_by', 'created_at')
     list_filter   = ('created_at',)
-    search_fields = ('name', 'subject', 'sender_name')
+    search_fields = ('name', 'subject', 'company_name', 'sender_name')
     readonly_fields = ('created_at', 'updated_at')
 
     fieldsets = (
         ('Template Info', {
-            'fields': ('name', 'sender_name', 'subject', 'created_by')
+            'fields': ('name', 'sender_name', 'subject', 'company_name', 'created_by')
         }),
         ('Email Body', {
             'fields': ('body_html',),

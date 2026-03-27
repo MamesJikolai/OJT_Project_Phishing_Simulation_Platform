@@ -38,7 +38,7 @@ class EmailTemplateSerializer(serializers.ModelSerializer):
         model  = EmailTemplate
         fields = [
             'id', 'name', 'subject', 'sender_name', 'body_html',
-            'created_by', 'created_by_username', 'created_at', 'updated_at',
+            'created_by', 'created_by_username', 'company_name', 'created_at', 'updated_at',
         ]
         read_only_fields = ['id', 'created_at', 'updated_at', 'created_by_username']
         extra_kwargs = {

@@ -182,7 +182,7 @@ class EmailTemplateViewSet(viewsets.ModelViewSet):
     serializer_class   = EmailTemplateSerializer
     permission_classes = [IsAdminOrHRReadOnly]
     filter_backends    = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields      = ['name', 'subject', 'sender_name']
+    search_fields      = ['name', 'subject', 'company_name', 'sender_name']
     ordering_fields    = ['name', 'created_at']
     ordering           = ['-created_at']
 
