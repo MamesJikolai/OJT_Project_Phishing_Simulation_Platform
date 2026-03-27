@@ -83,14 +83,14 @@ function SMTPConfigurationForm({ mode }: SMTPConfigurationFormProps) {
                         label="SMTP Host"
                         type="text"
                         name="smtp_host"
-                        placeholder="SMTP Host"
+                        placeholder="e.g. smtp.gmail.com"
                         value={smtpConfig?.smtp_host}
                         onChange={handleSmtpConfigChange}
                         className="w-full"
                     />
                     <TextInput
                         label="Port"
-                        type="text"
+                        type="number"
                         name="smtp_port"
                         placeholder="Port"
                         value={smtpConfig?.smtp_port}
@@ -103,7 +103,7 @@ function SMTPConfigurationForm({ mode }: SMTPConfigurationFormProps) {
                     label="SMTP Username"
                     type="text"
                     name="smtp_user"
-                    placeholder="SMTP Username"
+                    placeholder="e.g. example@email.com"
                     value={smtpConfig?.smtp_user}
                     onChange={handleSmtpConfigChange}
                     className="w-full"
@@ -124,7 +124,7 @@ function SMTPConfigurationForm({ mode }: SMTPConfigurationFormProps) {
                         label="From Email"
                         type="text"
                         name="from_email"
-                        placeholder="From Email"
+                        placeholder="e.g. example@email.com"
                         value={smtpConfig?.from_email}
                         onChange={handleSmtpConfigChange}
                         className="w-full"
@@ -133,7 +133,7 @@ function SMTPConfigurationForm({ mode }: SMTPConfigurationFormProps) {
                         label="Send Test To"
                         type="text"
                         name="to_email"
-                        placeholder="Send Test To"
+                        placeholder="e.g. example@email.com"
                         value={smtpConfig?.to_email}
                         onChange={handleSmtpConfigChange}
                         className="w-full"

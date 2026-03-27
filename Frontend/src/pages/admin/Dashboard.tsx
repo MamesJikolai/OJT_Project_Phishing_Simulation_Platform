@@ -156,7 +156,7 @@ function Dashboard() {
                 ) : (
                     <div className="flex justify-start w-full overflow-x-auto gap-4 pb-8">
                         {courseData.slice(0, 5).map((item, index) => (
-                            <CourseCard item={item} key={index} />
+                            <CourseCard item={item} key={index} isDashboard />
                         ))}
                     </div>
                 )}

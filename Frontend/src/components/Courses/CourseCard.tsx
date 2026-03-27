@@ -5,9 +5,8 @@ import type { Course } from '../../types/models'
 
 interface CourseCardProps {
     item: Course
-    image?: string
     customCSS?: string
-    userRole?: string
+    isDashboard?: boolean
     openEditModal?: () => void
     handleDeleteCourse?: () => void
     handlePublishCourse?: () => void
@@ -16,6 +15,7 @@ interface CourseCardProps {
 function CourseCard({
     item,
     customCSS,
+    isDashboard,
     openEditModal,
     handleDeleteCourse,
     handlePublishCourse,
@@ -56,7 +56,7 @@ function CourseCard({
                     </SmallButton>
                 )}
 
-            {userRole === 'admin' && (
+            {userRole === 'admin' && !isDashboard && (
                 <div>
                     <SmallButton
                         onClick={handlePublishCourse}
@@ -81,16 +81,17 @@ function CourseCard({
                 </div>
             )}
 
-            {userRole === 'hr' && (
-                <div>
-                    <SmallButton
-                        onClick={() => navigate(`/courses/${item.id}`)}
-                        className="bg-[#024C89] text-[#F8F9FA] hover:bg-[#3572A1]"
-                    >
-                        View
-                    </SmallButton>
-                </div>
-            )}
+            {userRole === 'hr' ||
+                (userRole === 'admin' && isDashboard && (
+                    <div>
+                        <SmallButton
+                            onClick={() => navigate(`/courses/${item.id}`)}
+                            className="bg-[#024C89] text-[#F8F9FA] hover:bg-[#3572A1]"
+                        >
+                            View
+                        </SmallButton>
+                    </div>
+                ))}
         </div>
     )
 }
