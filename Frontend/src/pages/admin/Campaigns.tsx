@@ -180,7 +180,6 @@ function Campaigns() {
                 accessorKey: 'status',
                 header: 'Status',
                 meta: { filterVariant: 'select' },
-                // Optional: Capitalize the status (e.g., "running" -> "Running")
                 cell: (info) => (
                     <span className="capitalize">
                         {info.getValue() as string}

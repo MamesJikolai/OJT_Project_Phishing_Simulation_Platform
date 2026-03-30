@@ -30,6 +30,7 @@ interface TableComponentProps<TData> {
     columns: ColumnDef<TData, any>[]
     isPaginated?: true | false
     customTablePadding?: string
+    title?: string
 }
 
 export default function TableComponent<TData>({
@@ -37,6 +38,7 @@ export default function TableComponent<TData>({
     columns,
     isPaginated = true,
     customTablePadding = '',
+    title,
 }: TableComponentProps<TData>) {
     const [columnFilters, setColumnFilters] =
         React.useState<ColumnFiltersState>([])
@@ -58,6 +60,7 @@ export default function TableComponent<TData>({
 
     return (
         <div className="text-[14px] w-full overflow-x-auto">
+            <h2>{title}</h2>
             <table className="w-full">
                 <thead>
                     {table.getHeaderGroups().map((headerGroup) => (

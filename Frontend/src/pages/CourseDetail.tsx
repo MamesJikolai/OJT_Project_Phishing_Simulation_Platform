@@ -64,14 +64,18 @@ function CourseDetail() {
                 formData
             )
 
+            // Refetch to get the new thumbnail URL
+            await fetchCourse()
+
             // Refetch the fully serialized course object to get the correct URL!
             await fetchCourse()
 
-            // Optional: Show a success message
             alert('Thumbnail uploaded successfully!')
-        } catch (err) {
+        } catch (err: any) {
             console.error('Failed to upload thumbnail:', err)
-            alert('Upload failed. Please try again.')
+            const errorMessage =
+                err.response?.data?.error || 'Upload failed. Please try again.'
+            alert(errorMessage)
         } finally {
             setIsUploading(false)
             setFile(null)
@@ -101,8 +105,6 @@ function CourseDetail() {
             }
         })
 
-        // Optional: Automatically open the new accordion panel
-        // If length was 2, the new index is 2
         setOpenLessonIndex(course?.lessons?.length || 0)
     }
 
@@ -291,8 +293,8 @@ function CourseDetail() {
                     onChange={(e) => {
                         const selectedFile = e.target.files?.[0]
                         if (selectedFile) {
-                            setFile(selectedFile) // Keep this if you want to show the file name in the UI later
-                            handleUpload(selectedFile) // Pass it directly!
+                            setFile(selectedFile)
+                            handleUpload(selectedFile)
                         }
                     }}
                     className="w-full cursor-pointer"

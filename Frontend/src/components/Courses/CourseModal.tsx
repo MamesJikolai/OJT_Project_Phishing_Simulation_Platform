@@ -3,7 +3,6 @@ import TextInput from '../TextInput.tsx'
 import type { Course } from '../../types/models.ts'
 import { useState } from 'react'
 
-// 2. Add your Course type here or import it
 interface CourseModalProps {
     isOpen: boolean
     onClose: () => void
@@ -19,18 +18,6 @@ function CourseModal({
     initialData,
     onSave,
 }: CourseModalProps) {
-    // id: number
-    // title: string
-    // description: string
-    // thumbnail: string
-    // is_published: boolean
-    // total_lessons: number
-    // has_quiz: true
-    // lessons: Lesson[]
-    // quiz: string
-    // created_at: string
-    // uodated_at: string
-
     const [title, setTitle] = useState(initialData?.title || '')
     const [caption, setCaption] = useState(initialData?.caption || '')
     const [description, setDescription] = useState(
@@ -47,14 +34,12 @@ function CourseModal({
             return
         }
 
-        // 2. Package all the current form states into one object
         const courseDataToSave: Partial<Course> = {
             title,
             description,
             caption,
         }
 
-        // 3. Send it back up to the parent!
         onSave(courseDataToSave as Course)
         onClose()
     }
@@ -68,7 +53,7 @@ function CourseModal({
                 className="flex flex-col gap-[8px] bg-[#F8F9FA] relative w-full max-w-2xl max-h-[90vh] px-[32px] py-[48px] overflow-y-auto rounded-xl drop-shadow-md"
             >
                 <button
-                    type="button" // Important so this doesn't submit the form
+                    type="button"
                     onClick={onClose}
                     className="absolute top-1 right-4 text-[#4A4A4A] hover:text-[#DC3545] text-3xl font-bold z-10 transition-colors"
                     aria-label="Close modal"
@@ -81,7 +66,11 @@ function CourseModal({
                     {mode === 'edit' && 'Edit Course'}
                 </h2>
 
-                {error && <p className="text-[#DC3545] text-sm m-0">{error}</p>}
+                {error && (
+                    <div className="bg-rose-100 border border-rose-400 text-rose-700 px-2 py-1 my-2 rounded relative">
+                        <span className="block sm:inline">{error}</span>
+                    </div>
+                )}
 
                 <TextInput
                     label="Title"
