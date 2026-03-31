@@ -3,29 +3,11 @@ import CourseCard from '../../components/Courses/CourseCard.tsx'
 import Message from '../../components/Message.tsx'
 import type { ColumnDef } from '@tanstack/react-table'
 import TableComponent from '../../components/Tables/TableComponent.tsx'
-import type { AnalyticsResponse, Course } from '../../types/models.ts'
+import type { DashboardResponse, Course } from '../../types/models.ts'
 import type { Campaign } from '../../types/models.ts'
 import { apiService } from '../../services/userService.ts'
 import { formatDate } from '../../utils/formatters.ts'
 import AnalyticsCards from '../../components/Analytics/AnalyticsCards.tsx'
-
-interface DashboardStats {
-    total_campaigns: number
-    running_campaigns: number
-    total_targets: number
-    total_sent: number
-    total_clicked: number
-    total_completed: number
-    click_rate: number
-    completion_rate: number
-    avg_quiz_score: number
-}
-
-interface DashboardResponse {
-    stats: DashboardStats
-    recent_campaigns: Campaign[]
-    recent_clicks: any[]
-}
 
 function Dashboard() {
     const [dashboardData, setDashboardData] =

@@ -297,4 +297,26 @@ export const apiService = {
         )
         return response.data
     },
+
+    completeLMSLesson: async (lessonId: number, token: string) => {
+        if (USE_MOCK_DATA) {
+            console.log(
+                `[MOCK POST] Completed lesson ${lessonId} with token ${token}`
+            )
+            return {
+                completed: true,
+                all_lessons_done: false,
+                completed_lessons: 1,
+                total_lessons: 1,
+            }
+        }
+
+        const response = await apiClient.post(
+            `lms/lessons/${lessonId}/complete/`,
+            {
+                token: token,
+            }
+        )
+        return response.data
+    },
 }

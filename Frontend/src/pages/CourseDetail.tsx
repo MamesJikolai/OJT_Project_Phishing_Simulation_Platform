@@ -27,6 +27,8 @@ function CourseDetail() {
     const [isSaving, setIsSaving] = useState(false)
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
 
+    const [showQuiz, setShowQuiz] = useState(false)
+
     const fetchCourse = async () => {
         if (!courseId) return
         try {
@@ -237,6 +239,40 @@ function CourseDetail() {
         }
     }
 
+    const handleLessonCompleted = useCallback(
+        async (lessonId: number) => {
+            if (!courseId) return
+            if (role !== 'public') return // Only track progress for actual employees
+
+            const token = localStorage.getItem('lms_token')
+
+            if (!token) {
+                console.warn(
+                    'No LMS token found in storage. Cannot save progress.'
+                )
+                return
+            }
+
+            try {
+                const response = await apiService.completeLMSLesson(
+                    lessonId,
+                    token
+                )
+                console.log(`Lesson ${lessonId} progress saved!`, response)
+
+                if (response.all_lessons_done) {
+                    alert(
+                        'Congratulations! You have completed all lessons for this course. You can now take the short quiz to test your knowledge!'
+                    )
+                    setShowQuiz(true)
+                }
+            } catch (err) {
+                console.error('Failed to save lesson progress:', err)
+            }
+        },
+        [courseId, role]
+    ) // Dependencies array
+
     if (isLoading) return <div className="p-8">Loading course details...</div>
     if (!course) return <div className="p-8">Course not found.</div>
 
@@ -348,6 +384,7 @@ function CourseDetail() {
                         role={role}
                         onLessonChange={handleLessonChange}
                         onLessonDelete={handleDeleteLesson}
+                        onLessonCompleted={handleLessonCompleted}
                     />
                 ))}
             </div>
@@ -371,6 +408,14 @@ function CourseDetail() {
                 >
                     {isSaving ? 'Saving...' : 'Save Changes'}
                 </DefaultButton>
+            )}
+
+            {/* Start Quiz Button */}
+            {role === 'public' && showQuiz && (
+                <DefaultButton
+                    children="Start Quiz"
+                    className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA] mt-4"
+                />
             )}
         </div>
     )

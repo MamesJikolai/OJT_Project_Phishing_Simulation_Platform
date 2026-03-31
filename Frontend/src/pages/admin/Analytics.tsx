@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import AnalyticsCards from '../../components/Analytics/AnalyticsCards.tsx'
 import Message from '../../components/Message.tsx'
-import type { Analytics, AnalyticsResponse } from '../../types/models.ts'
+import type { AnalyticsResponse } from '../../types/models.ts'
 import { apiService } from '../../services/userService.ts'
 
 function Analytics() {

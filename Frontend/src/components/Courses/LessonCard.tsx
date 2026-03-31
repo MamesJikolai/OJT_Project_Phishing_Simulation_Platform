@@ -1,10 +1,10 @@
 import { Icons } from '../../assets/icons'
 import type { Lesson } from '../../types/models'
 import { getEmbedUrl } from '../../utils/getEmbedUrl'
-import DefaultButton from '../DefaultButton'
 import CourseDetailsField from './CourseDetailsField'
 import CourseDetailsInput from './CourseDetailsInput'
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import LessonVideoPlayer from './LessonVideoPlayer'
 
 interface LessonCardProps {
     item: Lesson
@@ -14,6 +14,7 @@ interface LessonCardProps {
     role: string
     onLessonChange: (index: number, field: keyof Lesson, value: string) => void
     onLessonDelete: (index: number) => void
+    onLessonCompleted?: (lessonId: number) => void
 }
 
 function LessonCard({
@@ -24,14 +25,70 @@ function LessonCard({
     role,
     onLessonChange,
     onLessonDelete,
+    onLessonCompleted,
 }: LessonCardProps) {
     const embedUrl = getEmbedUrl(item.video_url)
     const [contentToggle, setContentToggle] = useState(
         Boolean(item.content_html && item.content_html.trim() !== '')
     )
 
+    const [videoCompleted, setVideoCompleted] = useState(false)
+    const [contentCompleted, setContentCompleted] = useState(false)
+    const contentEndRef = useRef<HTMLDivElement>(null)
+
+    const hasVideo = Boolean(embedUrl && embedUrl.trim() !== '')
+    const hasContent = Boolean(
+        item.content_html && item.content_html.trim() !== ''
+    )
+    const [isReported, setIsReported] = useState(false)
+
+    // Track when user scrolls to the bottom of the text content
+    useEffect(() => {
+        if (!hasContent) {
+            setContentCompleted(true) // Auto-complete if there is no text content
+            return
+        }
+
+        // Only track for users (not admins) when the lesson is open
+        if (role !== 'admin' && isOpen && contentEndRef.current) {
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    if (entries[0].isIntersecting) {
+                        setContentCompleted(true)
+                        observer.disconnect() // Stop observing once reached
+                    }
+                },
+                { threshold: 0.1 }
+            )
+            observer.observe(contentEndRef.current)
+            return () => observer.disconnect()
+        }
+    }, [hasContent, role, isOpen])
+
+    // Trigger the completion callback when requirements are met
+    useEffect(() => {
+        if (role !== 'admin' && item.id && !isReported) {
+            const isVideoDone = hasVideo ? videoCompleted : true
+            const isContentDone = hasContent ? contentCompleted : true
+
+            if (isVideoDone && isContentDone && onLessonCompleted) {
+                onLessonCompleted(item.id)
+                setIsReported(true)
+            }
+        }
+    }, [
+        videoCompleted,
+        contentCompleted,
+        hasVideo,
+        hasContent,
+        role,
+        item.id,
+        onLessonCompleted,
+    ])
+
     return (
         <div className="bg-[#F8F9FA] rounded-xl px-8 py-6 w-full shadow-sm border border-gray-100">
+            {/* Lesson Header */}
             <div
                 onClick={onToggle}
                 className="flex flex-row justify-between items-center cursor-pointer"
@@ -78,6 +135,7 @@ function LessonCard({
                 />
             </div>
 
+            {/* Lesson Contents */}
             <div
                 className={`grid transition-all duration-300 ease-in-out ${
                     isOpen
@@ -86,6 +144,7 @@ function LessonCard({
                 }`}
             >
                 <div className="flex flex-col gap-4 overflow-hidden">
+                    {/* Lesson Description */}
                     {role === 'admin' ? (
                         <CourseDetailsField
                             value={item.description || ''}
@@ -106,21 +165,15 @@ function LessonCard({
                         </p>
                     )}
 
-                    {!embedUrl || embedUrl.trim() === '' ? (
-                        ''
-                    ) : (
-                        <>
-                            <iframe
-                                src={embedUrl}
-                                title="YouTube video player"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                referrerPolicy="strict-origin-when-cross-origin"
-                                allowFullScreen
-                                className="w-[90%] aspect-video mx-auto"
-                            ></iframe>
-                        </>
+                    {/* Embedded Video */}
+                    {(embedUrl || embedUrl.trim() !== '') && (
+                        <LessonVideoPlayer
+                            url={embedUrl}
+                            onMilestoneReached={() => setVideoCompleted(true)}
+                        />
                     )}
 
+                    {/* Video URL Input */}
                     {role === 'admin' && (
                         <CourseDetailsInput
                             type="text"
@@ -138,6 +191,7 @@ function LessonCard({
                         />
                     )}
 
+                    {/* Additional Lesson Content */}
                     {role === 'admin' ? (
                         <>
                             <CourseDetailsInput
@@ -191,6 +245,10 @@ function LessonCard({
                         <p className="text-gray-700 whitespace-pre-wrap">
                             {item.content_html}
                         </p>
+                    )}
+
+                    {role !== 'admin' && hasContent && (
+                        <div ref={contentEndRef} className="h-1 w-full" />
                     )}
                 </div>
             </div>

@@ -139,7 +139,7 @@ export interface SMTPTest {
     to_email: string
 }
 
-export interface Analytics {
+export interface AnalyticsStats {
     total_campaigns: number
     total_sent: number
     total_clicked: number
@@ -149,7 +149,25 @@ export interface Analytics {
 }
 
 export interface AnalyticsResponse {
-    summary: Analytics
+    summary: AnalyticsStats
     campaigns: any[]
     department_stats: any[]
+}
+
+export interface DashboardStats {
+    total_campaigns: number
+    running_campaigns: number
+    total_targets: number
+    total_sent: number
+    total_clicked: number
+    total_completed: number
+    click_rate: number
+    completion_rate: number
+    avg_quiz_score: number
+}
+
+export interface DashboardResponse {
+    stats: DashboardStats
+    recent_campaigns: Campaign[]
+    recent_clicks: any[]
 }
