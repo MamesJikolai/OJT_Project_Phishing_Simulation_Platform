@@ -1,11 +1,10 @@
 import axios from 'axios'
 
 // Toggle this flag when you are ready to connect to Django
-export const USE_MOCK_DATA = false
 
 // The base URL will point to your React dev server for public files,
 // or your Django server when the mock is disabled.
-const BASE_URL = USE_MOCK_DATA ? '/' : 'http://localhost:8000/api/v1/'
+const BASE_URL = 'http://localhost:8000/api/v1/'
 
 export const apiClient = axios.create({
     baseURL: BASE_URL,
@@ -17,9 +16,6 @@ export const apiClient = axios.create({
 // Request Interceptor: Attach the JWT access token
 apiClient.interceptors.request.use(
     (config) => {
-        // If we are mocking, just proceed
-        if (USE_MOCK_DATA) return config
-
         // Grab the access token from local storage
         const token = localStorage.getItem('access_token')
 
