@@ -60,9 +60,57 @@ export interface Course {
     total_lessons: number
     has_quiz: true
     lessons: Lesson[]
-    quiz: string
+    quiz: Quiz | QuizPublic | null
     created_at: string
     updated_at: string
+}
+
+export interface Quiz {
+    id: number
+    title: string
+    passing_score: number
+    instructions: string
+    total_questions: number
+    questions: QuizQuestions[]
+}
+
+export interface QuizQuestions {
+    id: number
+    text: string
+    question_type: 'single' | 'multi'
+    order: number
+    explanation: string
+    choices: QuizChoices[]
+}
+
+export interface QuizChoices {
+    id: number
+    text: string
+    is_correct: boolean
+    order: number
+}
+
+export interface QuizPublic {
+    id: number
+    title: string
+    passing_score: number
+    instructions: string
+    total_questions: number
+    questions: QuizQuestions[]
+}
+
+export interface QuizQuestionsPublic {
+    id: number
+    text: string
+    question_type: 'single choice' | 'multiple choice'
+    order: number
+    choices: QuizChoices[]
+}
+
+export interface QuizChoicesPublic {
+    id: number
+    text: string
+    order: number
 }
 
 export interface EmailTemplate {

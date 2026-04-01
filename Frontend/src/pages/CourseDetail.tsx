@@ -3,7 +3,12 @@ import AdminCourseViewer from '../components/Courses/AdminCourseViewer'
 import PublicCourseViewer from '../components/Courses/PublicCourseViewer'
 
 function CourseDetail() {
-    const { user } = useAuth()
+    const { user, isLoading } = useAuth()
+
+    if (isLoading) {
+        return <div className="p-8">Loading...</div>
+    }
+
     const role = user?.role?.toLowerCase() || 'public'
 
     if (role === 'admin' || role === 'hr') {
