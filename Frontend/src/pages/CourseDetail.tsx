@@ -1,6 +1,6 @@
 import { useAuth } from '../context/AuthContext'
-import AdminCourseViewer from '../components/Courses/AdminCourseViewer'
-import PublicCourseViewer from '../components/Courses/PublicCourseViewer'
+import AdminCourseViewer from '../components/Courses/Admin/AdminCourseViewer'
+import PublicCourseViewer from '../components/Courses/Public/PublicCourseViewer'
 
 function CourseDetail() {
     const { user, isLoading } = useAuth()

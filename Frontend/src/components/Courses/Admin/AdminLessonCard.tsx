@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { Icons } from '../../assets/icons'
-import type { Lesson } from '../../types/models'
-import { getEmbedUrl } from '../../utils/getEmbedUrl'
-import CourseDetailsField from './CourseDetailsField'
-import CourseDetailsInput from './CourseDetailsInput'
-import LessonVideoPlayer from './LessonVideoPlayer'
+import { Icons } from '../../../assets/icons'
+import type { Lesson } from '../../../types/models'
+import { getEmbedUrl } from '../../../utils/getEmbedUrl'
+import CourseDetailsField from '../CourseDetailsField'
+import CourseDetailsInput from '../CourseDetailsInput'
+import LessonVideoPlayer from '../LessonVideoPlayer'
 
 interface AdminLessonCardProps {
     item: Lesson & { _tempId?: string } // Support for unsaved lessons

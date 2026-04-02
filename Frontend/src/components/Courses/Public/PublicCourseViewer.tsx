@@ -1,10 +1,10 @@
 import { useNavigate, useParams } from 'react-router-dom'
-import DefaultButton from '../DefaultButton'
-import Message from '../Message'
+import DefaultButton from '../../DefaultButton'
+import Message from '../../Message'
 import PublicLessonCard from './PublicLessonCard'
-import { useCourseData } from '../../hook/useCourseData'
+import { useCourseData } from '../../../hook/useCourseData'
 import { useCallback, useState } from 'react'
-import { apiService } from '../../services/userService'
+import { apiService } from '../../../services/userService'
 
 function PublicCourseViewer({ role }: { role: string }) {
     const { courseId } = useParams<{ courseId: string }>()

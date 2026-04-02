@@ -15,14 +15,14 @@ import {
     sortableKeyboardCoordinates,
     verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
-import DefaultButton from '../DefaultButton'
-import CourseDetailsInput from './CourseDetailsInput'
-import CourseDetailsField from './CourseDetailsField'
+import DefaultButton from '../../DefaultButton'
+import CourseDetailsInput from '../CourseDetailsInput'
+import CourseDetailsField from '../CourseDetailsField'
 import AdminLessonCard from './AdminLessonCard'
-import { useCourseData } from '../../hook/useCourseData'
-import { apiService } from '../../services/userService'
-import type { Course, Lesson, Quiz } from '../../types/models'
-import QuizModal from './QuizModal'
+import { useCourseData } from '../../../hook/useCourseData'
+import { apiService } from '../../../services/userService'
+import type { Course, Lesson, Quiz } from '../../../types/models'
+import QuizModal from '../QuizModal'
 
 const getLessonSortId = (lesson: any) => lesson.id?.toString() || lesson._tempId
 
