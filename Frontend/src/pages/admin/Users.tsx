@@ -149,20 +149,22 @@ function Users() {
     )
 
     return (
-        <div className="flex flex-col items-center m-8">
-            <Message text="Users" />
+        <div className="flex flex-col items-center p-4 md:p-8 w-full">
+            <div className="flex justify-between items-center w-full">
+                <Message text="Users" />
 
-            <DefaultButton
-                className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA] self-start mb-4"
-                onClick={() => {
-                    console.log(
-                        'Button clicked! isCsvModalOpen should be true now.'
-                    )
-                    setIsCsvModalOpen(true)
-                }}
-            >
-                Upload CSV
-            </DefaultButton>
+                <DefaultButton
+                    className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA] self-start mb-4"
+                    onClick={() => {
+                        console.log(
+                            'Button clicked! isCsvModalOpen should be true now.'
+                        )
+                        setIsCsvModalOpen(true)
+                    }}
+                >
+                    Upload CSV
+                </DefaultButton>
+            </div>
 
             {isLoading ? (
                 <div className="py-8 text-gray-500 animate-pulse">

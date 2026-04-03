@@ -363,7 +363,7 @@ function CampaignModal({
 
                 <DefaultButton
                     type="submit"
-                    className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA] self-center mt-4"
+                    className="w-full bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA] self-center mt-4"
                 >
                     {mode === 'create' ? 'Create' : 'Save Changes'}
                 </DefaultButton>

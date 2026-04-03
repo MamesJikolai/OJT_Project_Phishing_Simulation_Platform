@@ -296,7 +296,7 @@ function Campaigns() {
             },
         ],
         [handleDeleteCampaign, openEditModal]
-    ) // Dependencies for useMemo
+    )
 
     const visibleColumns =
         userRole === 'hr'
@@ -304,16 +304,18 @@ function Campaigns() {
             : columns
 
     return (
-        <div className="flex flex-col items-start m-8">
-            <Message text="Campaigns" />
+        <div className="flex flex-col items-start p-4 md:p-8 w-full">
+            <div className="flex justify-between items-center w-full">
+                <Message text="Campaigns" />
 
-            {userRole !== 'hr' && (
-                <DefaultButton
-                    className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA] mb-4"
-                    onClick={openCreateModal}
-                    children="Create Campaign"
-                />
-            )}
+                {userRole !== 'hr' && (
+                    <DefaultButton
+                        className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA]"
+                        onClick={openCreateModal}
+                        children="Create Campaign"
+                    />
+                )}
+            </div>
 
             {/* Show loading state or table */}
             {isLoading ? (

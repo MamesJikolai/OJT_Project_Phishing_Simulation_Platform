@@ -89,10 +89,10 @@ function Account() {
     if (!user) return null
 
     return (
-        <div className="flex flex-col items-start m-8">
+        <div className="flex flex-col items-start p-4 md:p-8 w-full">
             <Message text="Account" />
 
-            <div className="flex flex-col gap-4 bg-[#FEF9FA] w-[90%] max-w-[600px] mx-auto px-[48px] py-[32px] rounded-xl drop-shadow-md">
+            <div className="flex flex-col gap-4 bg-[#FEF9FA] w-full max-w-150 mx-auto px-6 py-4 md:px-12 md:py-8 rounded-xl drop-shadow-md">
                 <form onSubmit={handleSubmit} className="flex flex-col gap-8">
                     <div className="flex flex-row justify-between items-start">
                         <div className="flex flex-row gap-8">

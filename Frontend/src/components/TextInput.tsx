@@ -16,10 +16,6 @@ function TextInput({
 
     const handleWheel = (e: React.WheelEvent<HTMLInputElement>) => {
         if (props.type === 'number') {
-            // Prevent the default scrolling behavior on the input
-            e.preventDefault()
-
-            // Remove focus from the input so the scroll applies to the page/modal instead
             if (inputRef.current) {
                 inputRef.current.blur()
             }

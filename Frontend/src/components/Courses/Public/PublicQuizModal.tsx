@@ -101,7 +101,7 @@ function PublicQuizModal({
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-            <form className="flex flex-col gap-4 bg-[#F8F9FA] relative w-full max-w-2xl max-h-[90vh] px-[32px] py-[48px] overflow-y-auto rounded-xl drop-shadow-md">
+            <form className="flex flex-col gap-4 bg-[#F8F9FA] relative w-full max-w-2xl max-h-[90vh] px-6 py-4 md:px-8 md:py-6 overflow-y-auto rounded-xl drop-shadow-md">
                 <DefaultButton
                     children="&times;"
                     type="button"
@@ -122,7 +122,7 @@ function PublicQuizModal({
                     )}
                 </div>
 
-                <div className="flex flex-col gap-8">
+                <div className="flex flex-col gap-8 mb-4">
                     {initialData.questions.map((question, qIndex) => (
                         <div key={qIndex} className="flex flex-col gap-2">
                             <h3>
@@ -168,13 +168,13 @@ function PublicQuizModal({
                     ))}
                 </div>
 
-                <div className="flex flex-row gap-4 self-center">
+                <div className="flex flex-row gap-4">
                     <DefaultButton
                         children="Cancel"
                         type="button"
                         onClick={onClose}
                         disabled={isSubmitting}
-                        className="bg-transparent border border-[#DC3545] text-[#DC3545] hover:bg-[#DC3545] hover:text-[#F8F9FA]"
+                        className="w-full bg-transparent border border-[#DC3545] text-[#DC3545] hover:bg-[#DC3545] hover:text-[#F8F9FA]"
                     />
 
                     <DefaultButton
@@ -183,7 +183,7 @@ function PublicQuizModal({
                         }
                         onClick={handleSubmit}
                         disabled={isSubmitting}
-                        className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA]"
+                        className="w-full bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA]"
                     />
                 </div>
             </form>

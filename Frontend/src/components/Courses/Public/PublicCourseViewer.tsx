@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState, useRef } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import DefaultButton from '../../DefaultButton'
-import Message from '../../Message'
 import PublicLessonCard from './PublicLessonCard'
 import { useCourseData } from '../../../hook/useCourseData'
 import { apiService } from '../../../services/userService'
@@ -97,26 +96,27 @@ function PublicCourseViewer({ role }: { role: string }) {
     }, [showQuiz, course, role])
 
     return (
-        <div className="flex flex-col items-start gap-4 m-8">
+        <div className="flex flex-col items-start gap-4 p-4 md:p-8 w-full">
             <DefaultButton
                 onClick={() => navigate('/home')}
-                className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA] self-start mb-4"
+                className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA] self-start"
             >
                 Go Back
             </DefaultButton>
 
             {!course?.thumbnail || course?.thumbnail.trim() === '' ? (
-                <div className="bg-gradient-to-br from-[#3572A1] to-[#024C89] w-full h-[400px]"></div>
+                <div className="bg-gradient-to-br from-[#3572A1] to-[#024C89] w-full h-[200px] md:h-[400px]"></div>
             ) : (
                 <img
                     src={course?.thumbnail || undefined}
                     alt={course?.title}
-                    className="w-full h-[400px] object-cover"
+                    className="w-full h-[200px] md:h-[400px] object-cover"
                 />
             )}
 
-            <Message text={course?.title || 'Course Title'} />
-            <p className="text-justify whitespace-pre-wrap mb-4">
+            <h1>{course?.title || 'Course Title'}</h1>
+
+            <p className="text-justify whitespace-pre-wrap">
                 {course?.description}
             </p>
 
@@ -138,7 +138,7 @@ function PublicCourseViewer({ role }: { role: string }) {
             </div>
 
             {showQuiz && (
-                <div className="flex flex-row gap-4 items-center mt-4">
+                <div className="flex flex-row gap-4 items-center">
                     <DefaultButton
                         children="Start Quiz"
                         onClick={() => {

@@ -52,7 +52,7 @@ function QuizModal({
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-            <div className="flex flex-col gap-2 bg-[#F8F9FA] relative w-full max-w-2xl max-h-[90vh] px-[32px] py-[48px] overflow-y-auto rounded-xl drop-shadow-md">
+            <div className="flex flex-col gap-2 bg-[#F8F9FA] relative w-full max-w-2xl max-h-[90vh] px-4 md:px-8 py-12 overflow-y-auto rounded-xl drop-shadow-md">
                 <DefaultButton
                     children="&times;"
                     type="button"
@@ -128,6 +128,7 @@ function QuizModal({
 
                     {quizState.questions.map((question, qIndex) => (
                         <QuestionCards
+                            key={qIndex}
                             qIndex={qIndex}
                             question={question}
                             removeQuestion={removeQuestion}
@@ -147,12 +148,12 @@ function QuizModal({
                 </div>
 
                 {/* Form Actions */}
-                <div className="flex justify-end gap-4 pt-4">
+                <div className="flex gap-4 pt-4">
                     <DefaultButton
                         children="Cancel"
                         onClick={onClose}
                         disabled={isSaving}
-                        className="bg-[#DC3545] hover:bg-[#FF6B6B] text-[#F8F9FA]"
+                        className="w-full bg-[#DC3545] hover:bg-[#FF6B6B] text-[#F8F9FA]"
                     />
                     <DefaultButton
                         children={
@@ -160,7 +161,7 @@ function QuizModal({
                         }
                         onClick={onSaveClick}
                         disabled={isSaving}
-                        className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA]"
+                        className="w-full bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA]"
                     />
                 </div>
             </div>

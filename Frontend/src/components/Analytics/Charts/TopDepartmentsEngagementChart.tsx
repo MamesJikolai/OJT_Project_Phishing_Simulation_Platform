@@ -27,15 +27,15 @@ function TopDepartmentsEngagementChart({
         <div className="w-full bg-[#F8F9FA] p-6 rounded-lg drop-shadow-md border border-gray-100">
             <h3 className="mb-4">Top 10 Departments By Engagement</h3>
 
-            <div className="h-120 w-full">
+            <div className="h-90 lg:h-120 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                     <BarChart
                         data={topEngagementData}
                         layout="vertical"
                         margin={{
                             top: 20,
-                            right: 30,
-                            left: 40,
+                            right: 20,
+                            left: 20,
                             bottom: 5,
                         }}
                     >

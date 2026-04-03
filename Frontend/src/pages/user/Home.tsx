@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react'
 import Message from '../../components/Message.tsx'
 import CourseCard from '../../components/Courses/CourseCard.tsx'
-import { Icons } from '../../assets/icons.ts'
-import { NavLink } from 'react-router-dom'
 import type { Course } from '../../types/models.ts'
 import { apiService } from '../../services/userService.ts'
 

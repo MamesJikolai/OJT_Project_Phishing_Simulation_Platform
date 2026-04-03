@@ -280,11 +280,11 @@ function AdminCourseViewer({ role }: { role: string }) {
     if (!course) return <div className="p-8">Course not found.</div>
 
     return (
-        <div className="flex flex-col items-start gap-4 m-8">
+        <div className="flex flex-col items-start gap-4 p-4 md:p-8 w-full">
             <div className="flex flex-row justify-between w-full">
                 <DefaultButton
                     onClick={() => navigate('/courses')}
-                    className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA] self-start mb-4"
+                    className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA] self-start"
                 >
                     Go Back
                 </DefaultButton>
@@ -292,7 +292,7 @@ function AdminCourseViewer({ role }: { role: string }) {
                 {role === 'admin' && (
                     <DefaultButton
                         onClick={handleDeleteCourse}
-                        className="bg-[#DC3545] hover:bg-[#FF6B6B] text-[#F8F9FA] self-start mb-4"
+                        className="bg-[#DC3545] hover:bg-[#FF6B6B] text-[#F8F9FA] self-start"
                     >
                         Delete
                     </DefaultButton>
@@ -300,17 +300,17 @@ function AdminCourseViewer({ role }: { role: string }) {
             </div>
 
             {!course.thumbnail || course.thumbnail.trim() === '' ? (
-                <div className="bg-gradient-to-br from-[#3572A1] to-[#024C89] w-full h-[400px]"></div>
+                <div className="bg-gradient-to-br from-[#3572A1] to-[#024C89] w-full h-[200px] md:h-[400px]"></div>
             ) : (
                 <img
                     src={course.thumbnail || undefined}
                     alt={course.title}
-                    className="w-full h-[400px] object-cover"
+                    className="w-full h-[200px] md:h-[400px] object-cover"
                 />
             )}
 
             <CourseDetailsInput
-                label={isUploading ? 'Uploading...' : 'Upload Thumbnail'}
+                label={isUploading ? 'Uploading...' : 'Thumbnail'}
                 type="file"
                 disabled={isUploading}
                 accept="image/png, image/jpeg, image/webp, .png, .jpg, .jpeg, .webp"
@@ -347,7 +347,7 @@ function AdminCourseViewer({ role }: { role: string }) {
                 rows={8}
             />
 
-            <div className="flex flex-col gap-4 w-full mt-4">
+            <div className="flex flex-col gap-4 w-full">
                 {/* Drag and Drop Context Wrappers */}
                 <DndContext
                     sensors={sensors}

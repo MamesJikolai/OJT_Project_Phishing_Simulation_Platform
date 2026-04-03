@@ -15,7 +15,6 @@ function LandingPage() {
     const [error, setError] = useState('')
     const [isLoading, setIsLoading] = useState(true)
 
-    // 1. Fetch from Django on load
     useEffect(() => {
         const fetchSettings = async () => {
             try {
@@ -37,7 +36,6 @@ function LandingPage() {
         fetchSettings()
     }, [])
 
-    // 2. Save to Django on submit
     const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault()
         setError('')
@@ -55,7 +53,6 @@ function LandingPage() {
         }
 
         try {
-            // Using the singleton method we discussed!
             await apiService.updateSingleton('settings', payload)
             alert('Template saved to database!')
         } catch (err) {
@@ -73,13 +70,13 @@ function LandingPage() {
     }
 
     return (
-        <div className="flex flex-col items-start m-8">
+        <div className="flex flex-col items-start p-4 md:p-8 w-full box-border">
             <Message text="Landing Page Content" />
 
-            <div className="flex justify-center gap-8 flex-wrap">
+            <div className="flex justify-center gap-8 flex-wrap max-w-[100%]">
                 <form
                     onSubmit={handleSubmit}
-                    className="flex flex-col gap-[8px] bg-[#F8F9FA] w-[600px] h-fit max-h-[90vh] px-[48px] py-[32px] rounded-xl drop-shadow-md"
+                    className="flex flex-col gap-2 bg-[#F8F9FA] w-150 h-fit max-h-[90vh] px-[48px] py-[32px] rounded-xl drop-shadow-md"
                 >
                     {error && (
                         <p className="text-[#DC3545] text-sm m-0">{error}</p>
@@ -121,7 +118,7 @@ function LandingPage() {
                     />
                     <DefaultButton
                         type="submit"
-                        className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA] self-center mt-4"
+                        className="w-full bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA] self-center mt-4"
                     >
                         Save
                     </DefaultButton>

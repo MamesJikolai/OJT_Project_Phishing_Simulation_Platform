@@ -51,7 +51,7 @@ function AdminLessonCard({
             <div
                 {...attributes}
                 {...listeners}
-                className="flex items-center justify-center px-4 cursor-grab active:cursor-grabbing border-r border-gray-200 hover:bg-gray-200 rounded-l-xl transition-colors"
+                className="flex items-center justify-center px-1 lg:px-2 cursor-grab active:cursor-grabbing border-r border-gray-200 hover:bg-gray-200 rounded-l-xl transition-colors"
                 title="Drag to reorder"
             >
                 {/* 6-dot grip icon */}

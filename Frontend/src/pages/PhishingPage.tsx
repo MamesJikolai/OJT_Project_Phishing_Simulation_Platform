@@ -85,7 +85,7 @@ function PhishingPage({
 
     return (
         <div
-            className={`flex flex-col justify-center items-center gap-4 bg-[#F8F9FA] px-4 text-center ${
+            className={`flex flex-col justify-center items-center gap-4 bg-[#F8F9FA] px-8 text-center ${
                 previewTemplate ? 'h-full' : 'h-screen'
             }`}
         >

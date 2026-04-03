@@ -7,7 +7,6 @@ interface CourseCardProps {
     item: Course
     customCSS?: string
     isDashboard?: boolean
-    openEditModal?: () => void
     handleDeleteCourse?: () => void
     handlePublishCourse?: () => void
 }
@@ -16,7 +15,6 @@ function CourseCard({
     item,
     customCSS,
     isDashboard,
-    openEditModal,
     handleDeleteCourse,
     handlePublishCourse,
 }: CourseCardProps) {
@@ -27,7 +25,7 @@ function CourseCard({
 
     return (
         <div
-            className={`flex flex-col bg-[#F8F9FA] w-[300px] rounded-2xl p-4 shrink-0 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border border-gray-100 ${customCSS}`}
+            className={`flex flex-col bg-[#F8F9FA] w-full md:w-[300px] rounded-2xl p-4 shrink-0 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border border-gray-100 ${customCSS}`}
         >
             {!item.thumbnail ? (
                 <div className="relative w-full h-[120px] rounded-xl overflow-hidden">

@@ -67,12 +67,12 @@ function SMTPConfigurationForm({ mode }: SMTPConfigurationFormProps) {
     }
 
     return (
-        <div>
+        <div className="w-full md:w-150">
             {!mode && <h2 className="mb-2">Test SMTP Connection</h2>}
 
             <form
                 onSubmit={handleSmtpConfigSubmit}
-                className="flex flex-col gap-[8px] bg-[#F8F9FA] w-[600px] h-fit max-h-[90vh] px-[32px] py-[24px] rounded-xl drop-shadow-md"
+                className="flex flex-col gap-2 bg-[#F8F9FA] w-full md:w-150 h-fit max-h-[90vh] px-8 py-6 rounded-xl drop-shadow-md"
             >
                 {smtpError && (
                     <p className="text-[#DC3545] text-sm m-0">{smtpError}</p>
@@ -153,7 +153,7 @@ function SMTPConfigurationForm({ mode }: SMTPConfigurationFormProps) {
                 <DefaultButton
                     type="submit"
                     children="Send Test Email"
-                    className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA] self-center mt-4"
+                    className="w-full bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA] self-center mt-4"
                 />
             </form>
         </div>

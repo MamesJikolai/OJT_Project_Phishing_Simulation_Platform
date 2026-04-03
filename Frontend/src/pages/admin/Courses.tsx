@@ -108,16 +108,18 @@ function Courses() {
     }
 
     return (
-        <div className="flex flex-col items-start m-8">
-            <Message text="Courses" />
+        <div className="flex flex-col items-start p-4 md:p-8 w-full">
+            <div className="flex justify-between items-center w-full">
+                <Message text="Courses" />
 
-            {userRole !== 'hr' && (
-                <DefaultButton
-                    className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA] mb-4"
-                    onClick={openCreateModal}
-                    children="Create Course"
-                />
-            )}
+                {userRole !== 'hr' && (
+                    <DefaultButton
+                        className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA]"
+                        onClick={openCreateModal}
+                        children="Create Course"
+                    />
+                )}
+            </div>
 
             {/* Cards Container */}
             {isLoading ? (
@@ -130,7 +132,6 @@ function Courses() {
                         <CourseCard
                             item={item}
                             key={item.id}
-                            openEditModal={() => openEditModal(item)}
                             handleDeleteCourse={() => handleDeleteCourse(item)}
                             handlePublishCourse={() =>
                                 handlePublishCourse(item)

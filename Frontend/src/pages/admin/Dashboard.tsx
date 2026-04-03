@@ -148,12 +148,12 @@ function Dashboard() {
     ]
 
     return (
-        <div className="flex flex-col items-start p-8 overflow-x-hidden max-w-full">
+        <div className="flex flex-col items-start p-4 md:p-8 w-full box-border overflow-x-hidden">
             <Message text="Dashboard" />
 
             <div className="flex flex-col gap-8 max-w-full">
                 {dashboardData && (
-                    <div className="flex flex-row flex-wrap gap-4">
+                    <div className="flex flex-row flex-wrap gap-4 justify-center md:justify-start">
                         {summaryMetrics.map((metric, index) => (
                             <AnalyticsCards
                                 key={index}

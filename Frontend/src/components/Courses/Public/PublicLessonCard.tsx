@@ -88,11 +88,11 @@ function PublicLessonCard({
     }
 
     return (
-        <div className="bg-[#F8F9FA] rounded-xl px-8 py-6 w-full shadow-sm border border-gray-100">
+        <div className="bg-[#F8F9FA] rounded-xl px-6 py-4 md:px-8 md:py-6 w-full shadow-sm border border-gray-100">
             {/* Lesson Header */}
             <div
                 onClick={onToggle}
-                className="flex flex-row justify-between items-center cursor-pointer"
+                className="flex flex-row justify-between gap-4 items-center cursor-pointer"
             >
                 <h2 onClick={onToggle}>
                     Lesson {index + 1}: {item.title}
@@ -115,7 +115,7 @@ function PublicLessonCard({
             >
                 <div className="flex flex-col gap-4 overflow-hidden">
                     {/* Lesson Description */}
-                    <p className="text-gray-700 whitespace-pre-wrap">
+                    <p className="text-gray-700 text-justify whitespace-pre-wrap">
                         {item.description}
                     </p>
 
@@ -130,7 +130,7 @@ function PublicLessonCard({
                     {/* Additional Lesson Content */}
                     {hasContent && (
                         <div
-                            className="flex flex-col gap-3"
+                            className="flex flex-col gap-3 text-justify"
                             dangerouslySetInnerHTML={{
                                 __html: formatHtmlContent(item.content_html),
                             }}

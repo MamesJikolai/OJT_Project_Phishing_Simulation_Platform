@@ -15,11 +15,11 @@ function EmailTemplateCard({
     handleDeleteTemplate,
 }: EmailTemplateCardProps) {
     return (
-        <div className="flex flex-row flex-wrap justify-center v gap-8 mt-8 mx-auto">
+        <div className="flex flex-row flex-wrap gap-8 justify-center lg:justify-start  mx-auto">
             {emailTemplate.map((item, index) => (
                 <div
                     key={index}
-                    className="flex flex-col gap-2 bg-[#F8F9FA] px-8 py-4 rounded-2xl shrink-0 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 drop-shadow-md"
+                    className="flex flex-col gap-2 bg-[#F8F9FA] w-full max-w-[480px] px-4 sm:px-8 py-4 rounded-2xl transition-all duration-300 hover:shadow-xl hover:-translate-y-1 drop-shadow-md"
                 >
                     <div className="flex flex-col gap-2 pb-2 border-b-2 border-[#DDE2E5] grow">
                         <h3>{item.name}</h3>
@@ -35,17 +35,13 @@ function EmailTemplateCard({
                                 {item.created_by_username}
                             </span>
                         </p>
-                        <div className="bg-[#DDE2E5] text-[14px] grow w-[400px] px-4 py-2 rounded-xl">
+                        <div className="bg-[#DDE2E5] text-[14px] grow w-full px-4 py-2 rounded-xl">
                             <p className="font-bold">{item.subject}</p>
                             <br />
-                            {/* Updated to use body_html from Django */}
-                            {/* Note: If this contains actual HTML, you might need dangerouslySetInnerHTML, 
-                                but standard text output is safer if it's just raw strings right now */}
                             <p className="whitespace-pre-wrap">
                                 {item.body_html}
                             </p>
                         </div>
-                        {/* Updated to use created_at from Django */}
                         <p className="text-[12px]">
                             Created{' '}
                             {new Date(item.created_at).toLocaleDateString()}

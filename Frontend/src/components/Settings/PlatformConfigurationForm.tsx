@@ -86,12 +86,12 @@ function PlatformConfigurationForm() {
     }
 
     return (
-        <div>
+        <div className="w-full md:w-150">
             <h2 className="mb-2">Platform Configuration</h2>
 
             <form
                 onSubmit={handlePlatformConfigSubmit}
-                className="flex flex-col gap-[8px] bg-[#F8F9FA] w-[600px] h-fit max-h-[90vh] px-[32px] py-[24px] rounded-xl drop-shadow-md"
+                className="flex flex-col gap-2 bg-[#F8F9FA] w-full md:w-150 h-fit max-h-[90vh] px-8 py-6 rounded-xl drop-shadow-md"
             >
                 {platformError && (
                     <p className="text-[#DC3545] text-sm m-0">
@@ -151,19 +151,8 @@ function PlatformConfigurationForm() {
                 <DefaultButton
                     type="submit"
                     children="Save Settings"
-                    className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA] self-center mt-4"
+                    className="w-full bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA] self-center mt-4"
                 />
-
-                {/* <div className="flex flex-col gap-2 justify-center border-t-1 border-[#DDE2E5] pt-4">
-                    <p className="text-[12px]">
-                        Last saved: {platformConfig.saved}
-                    </p>
-                    <DefaultButton
-                        type="submit"
-                        children="Save Settings"
-                        className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA] self-center"
-                    />
-                </div> */}
             </form>
         </div>
     )

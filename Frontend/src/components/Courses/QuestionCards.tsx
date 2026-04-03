@@ -50,9 +50,9 @@ function QuestionCards({
             </div>
 
             {/* Question Details */}
-            <div className="flex gap-4">
+            <div className="flex flex-wrap gap-4">
                 {/* Question Text */}
-                <div className="flex-1">
+                <div className="flex-1 min-w-[300px]">
                     <TextField
                         label="Question Text"
                         placeholder="Enter your question here..."
@@ -66,7 +66,7 @@ function QuestionCards({
                 </div>
 
                 {/* Question Type */}
-                <div className="w-48">
+                <div className="w-fit">
                     <label className="block text-sm font-medium mb-2">
                         Type
                     </label>

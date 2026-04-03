@@ -5,10 +5,10 @@ import AdminUsers from '../../components/Settings/AdminUsers.tsx'
 
 function Settings() {
     return (
-        <div className="flex flex-col items-start m-8">
+        <div className="flex flex-col items-start p-4 md:p-8 w-full box-border">
             <Message text="Settings" />
 
-            <div className="flex flex-row justify-center flex-wrap gap-16">
+            <div className="flex flex-row justify-center flex-wrap gap-8 md:gap-16 w-full">
                 <PlatformConfigurationForm />
 
                 <SMTPConfigurationForm />

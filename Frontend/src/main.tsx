@@ -7,7 +7,6 @@ import UserLayout from './UserLayout.tsx'
 import Dashboard from './pages/admin/Dashboard.tsx'
 import Home from './pages/user/Home.tsx'
 import Courses from './pages/admin/Courses.tsx'
-import MyCourses from './pages/user/MyCourses.tsx'
 import Settings from './pages/admin/Settings.tsx'
 import Campaigns from './pages/admin/Campaigns.tsx'
 import Analytics from './pages/admin/Analytics.tsx'
@@ -45,10 +44,6 @@ const router = createBrowserRouter([
             {
                 path: '/home',
                 element: <Home />,
-            },
-            {
-                path: '/my-courses',
-                element: <MyCourses />,
             },
         ],
     },

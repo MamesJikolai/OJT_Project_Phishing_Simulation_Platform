@@ -102,14 +102,16 @@ function Templates() {
     )
 
     return (
-        <div className="flex flex-col items-start m-8">
-            <Message text="Templates" />
+        <div className="flex flex-col items-start p-4 md:p-8 w-full box-border">
+            <div className="flex justify-between items-center w-full">
+                <Message text="Templates" />
 
-            <DefaultButton
-                children="New Template"
-                onClick={openCreateModal}
-                className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA]"
-            />
+                <DefaultButton
+                    children="New Template"
+                    onClick={openCreateModal}
+                    className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA]"
+                />
+            </div>
 
             {/* Cards Container */}
             {isLoading ? (

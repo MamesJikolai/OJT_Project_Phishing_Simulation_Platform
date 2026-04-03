@@ -7,7 +7,7 @@ function Message({ text, subtitle }: MessageProps) {
     return (
         <>
             <h1
-                className={`font-bold text-4xl text-[#121212] w-[100%] mt-4 ${subtitle ? 'mb-2' : 'mb-4'}`}
+                className={`font-bold text-4xl text-[#121212] w-fit mt-4 ${subtitle ? 'mb-2' : 'mb-4'}`}
             >
                 {text}
             </h1>
