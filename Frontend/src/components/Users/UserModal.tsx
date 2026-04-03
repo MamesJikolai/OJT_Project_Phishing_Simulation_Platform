@@ -30,6 +30,7 @@ function UserModal({ isOpen, onClose, initialData, onSave }: UserModalProps) {
 
         const userDataToSave: Partial<User> = {
             ...(initialData && { id: initialData.id }),
+            campaign: initialData?.campaign,
             full_name,
             email,
             department,

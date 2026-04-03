@@ -61,9 +61,10 @@ function Users() {
     const handleSaveUser = async (userData: Partial<User>) => {
         try {
             const updatedUser = await apiService.update<User>(
-                'targets',
+                `campaigns/${userData.campaign}/targets`,
                 userData.id!,
-                userData
+                userData,
+                'PATCH'
             )
 
             setData((prev: User[]) =>
