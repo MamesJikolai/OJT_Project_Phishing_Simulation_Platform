@@ -82,26 +82,6 @@ function Dashboard() {
             enableColumnFilter: false,
         },
         {
-            accessorKey: 'total_targets',
-            header: 'Target',
-            enableColumnFilter: false,
-        },
-        {
-            accessorKey: 'email_template_name',
-            header: 'Template',
-            enableColumnFilter: false,
-            cell: (info) =>
-                info.getValue() || (
-                    <span className="text-gray-400 italic">None</span>
-                ),
-        },
-        {
-            accessorKey: 'created_at',
-            header: 'Created',
-            enableColumnFilter: false,
-            cell: (info) => formatDate(info.getValue() as string),
-        },
-        {
             accessorKey: 'click_rate',
             header: 'Click Rate',
             enableColumnFilter: false,
@@ -135,11 +115,6 @@ function Dashboard() {
         { accessorKey: 'full_name', header: 'Name', enableColumnFilter: false },
         { accessorKey: 'email', header: 'Email', enableColumnFilter: false },
         {
-            accessorKey: 'campaign',
-            header: 'Campaign',
-            enableColumnFilter: false,
-        },
-        {
             accessorKey: 'clicked_at',
             header: 'Time',
             enableColumnFilter: false,
@@ -151,7 +126,7 @@ function Dashboard() {
         <div className="flex flex-col items-start p-4 md:p-8 w-full box-border overflow-x-hidden">
             <Message text="Dashboard" />
 
-            <div className="flex flex-col gap-8 max-w-full">
+            <div className="flex flex-col gap-4 max-w-full">
                 {dashboardData && (
                     <div className="flex flex-row flex-wrap gap-4 justify-center md:justify-start">
                         {summaryMetrics.map((metric, index) => (
@@ -164,33 +139,35 @@ function Dashboard() {
                     </div>
                 )}
 
-                {isLoading ? (
-                    <div className="py-8 text-gray-500 animate-pulse">
-                        Loading Campaigns...
-                    </div>
-                ) : (
-                    <TableComponent
-                        data={dashboardData?.recent_campaigns || []}
-                        columns={recentCampaignsColumns}
-                        isPaginated={false}
-                        customTablePadding="!py-2 !px-1"
-                        title="Recent Campaigns"
-                    />
-                )}
+                <div className="flex gap-8">
+                    {isLoading ? (
+                        <div className="py-8 text-gray-500 animate-pulse">
+                            Loading Campaigns...
+                        </div>
+                    ) : (
+                        <TableComponent
+                            data={dashboardData?.recent_campaigns || []}
+                            columns={recentCampaignsColumns}
+                            isPaginated={false}
+                            customTablePadding="py-2! px-1! h-10"
+                            title="Recent Campaigns"
+                        />
+                    )}
 
-                {isLoading ? (
-                    <div className="py-8 text-gray-500 animate-pulse">
-                        Loading Recent Clicks...
-                    </div>
-                ) : (
-                    <TableComponent
-                        data={dashboardData?.recent_clicks || []}
-                        columns={recentClickColumns}
-                        isPaginated={false}
-                        customTablePadding="!py-2 !px-1"
-                        title="Recent Clicks"
-                    />
-                )}
+                    {isLoading ? (
+                        <div className="py-8 text-gray-500 animate-pulse">
+                            Loading Recent Clicks...
+                        </div>
+                    ) : (
+                        <TableComponent
+                            data={dashboardData?.recent_clicks || []}
+                            columns={recentClickColumns}
+                            isPaginated={false}
+                            customTablePadding="py-2! px-1! h-10"
+                            title="Recent Clicks"
+                        />
+                    )}
+                </div>
 
                 {isLoading ? (
                     <div className="py-8 text-gray-500 animate-pulse">
@@ -198,15 +175,25 @@ function Dashboard() {
                     </div>
                 ) : (
                     <div>
-                        <h2>Recent Courses</h2>
+                        <h2>Recently Updated Courses</h2>
                         <div className="flex justify-start w-full overflow-x-auto gap-4">
-                            {courseData.slice(0, 5).map((item, index) => (
-                                <CourseCard
-                                    item={item}
-                                    key={index}
-                                    isDashboard
-                                />
-                            ))}
+                            {[...courseData]
+                                .sort((a, b) => {
+                                    const dateA = String(a.updated_at || '')
+                                    const dateB = String(b.updated_at || '')
+
+                                    if (dateA < dateB) return 1
+                                    if (dateA > dateB) return -1
+                                    return 0
+                                })
+                                .slice(0, 5)
+                                .map((item, index) => (
+                                    <CourseCard
+                                        item={item}
+                                        key={index}
+                                        isDashboard
+                                    />
+                                ))}
                         </div>
                     </div>
                 )}

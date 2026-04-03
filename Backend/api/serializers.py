@@ -142,7 +142,7 @@ class CourseListSerializer(serializers.ModelSerializer):
         model  = Course
         fields = [
             'id', 'title', 'caption', 'description', 'thumbnail',
-            'is_published', 'total_lessons', 'has_quiz', 'created_at',
+            'is_published', 'total_lessons', 'has_quiz', 'created_at', 'updated_at',
         ]
 
 

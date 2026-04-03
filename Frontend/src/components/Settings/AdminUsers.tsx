@@ -86,7 +86,7 @@ function AdminUsers() {
                     Loading Admin Users...
                 </div>
             ) : (
-                <TableComponent data={data} columns={columns} />
+                <TableComponent data={data} columns={columns} pageSize={5} />
             )}
 
             {isModalOpen && (

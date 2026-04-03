@@ -31,6 +31,7 @@ interface TableComponentProps<TData> {
     isPaginated?: true | false
     customTablePadding?: string
     title?: string
+    pageSize?: number
 }
 
 export default function TableComponent<TData>({
@@ -39,6 +40,7 @@ export default function TableComponent<TData>({
     isPaginated = true,
     customTablePadding = '',
     title,
+    pageSize = 10,
 }: TableComponentProps<TData>) {
     const [columnFilters, setColumnFilters] =
         React.useState<ColumnFiltersState>([])
@@ -47,6 +49,11 @@ export default function TableComponent<TData>({
         data,
         columns,
         state: { columnFilters },
+        initialState: {
+            pagination: {
+                pageSize: pageSize,
+            },
+        },
         onColumnFiltersChange: setColumnFilters,
         getCoreRowModel: getCoreRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
@@ -115,6 +122,7 @@ export default function TableComponent<TData>({
                             </tr>
                         ))}
                     </thead>
+
                     <tbody>
                         {table.getRowModel().rows.map((row) => {
                             return (
@@ -142,6 +150,32 @@ export default function TableComponent<TData>({
                                 </tr>
                             )
                         })}
+
+                        {/* Render blank rows to fill rows except when not paginated */}
+                        {table.getState().pagination.pageSize -
+                            table.getRowModel().rows.length >
+                            0 &&
+                            isPaginated &&
+                            Array.from({
+                                length:
+                                    table.getState().pagination.pageSize -
+                                    table.getRowModel().rows.length,
+                            }).map((_, rowIndex) => (
+                                <tr key={`empty-${rowIndex}`}>
+                                    {table
+                                        .getVisibleLeafColumns()
+                                        .map((column) => (
+                                            <td
+                                                key={`empty-${rowIndex}-${column.id}`}
+                                                className={`${customTablePadding}`}
+                                            >
+                                                <div className="opacity-0 pointer-events-none select-none">
+                                                    &nbsp;
+                                                </div>
+                                            </td>
+                                        ))}
+                                </tr>
+                            ))}
                     </tbody>
                 </table>
             </div>
