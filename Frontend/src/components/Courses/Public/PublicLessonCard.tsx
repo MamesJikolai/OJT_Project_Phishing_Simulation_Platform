@@ -24,6 +24,7 @@ function PublicLessonCard({
 
     const [videoCompleted, setVideoCompleted] = useState(false)
     const [contentCompleted, setContentCompleted] = useState(false)
+    const [hasViewed, setHasViewed] = useState(false)
     const contentEndRef = useRef<HTMLDivElement>(null)
 
     const hasVideo = Boolean(embedUrl && embedUrl.trim() !== '')
@@ -55,9 +56,15 @@ function PublicLessonCard({
         }
     }, [hasContent, isOpen])
 
+    useEffect(() => {
+        if (isOpen && !hasViewed) {
+            setHasViewed(true)
+        }
+    }, [isOpen, hasViewed])
+
     // Trigger the completion callback when requirements are met
     useEffect(() => {
-        if (item.id && !isReported) {
+        if (item.id && !isReported && hasViewed) {
             const isVideoDone = hasVideo ? videoCompleted : true
             const isContentDone = hasContent ? contentCompleted : true
 
@@ -73,6 +80,8 @@ function PublicLessonCard({
         hasContent,
         item.id,
         onLessonCompleted,
+        isReported,
+        hasViewed,
     ])
 
     const formatHtmlContent = (rawHtml: string | null | undefined) => {
