@@ -6,23 +6,13 @@ import { useState } from 'react'
 interface CourseModalProps {
     isOpen: boolean
     onClose: () => void
-    mode: 'create' | 'edit'
-    initialData?: Course | null
     onSave: (course: Course) => void
 }
 
-function CourseModal({
-    isOpen,
-    onClose,
-    mode,
-    initialData,
-    onSave,
-}: CourseModalProps) {
-    const [title, setTitle] = useState(initialData?.title || '')
-    const [caption, setCaption] = useState(initialData?.caption || '')
-    const [description, setDescription] = useState(
-        initialData?.description?.toLowerCase() || ''
-    )
+function CourseModal({ isOpen, onClose, onSave }: CourseModalProps) {
+    const [title, setTitle] = useState('')
+    const [caption, setCaption] = useState('')
+    const [description, setDescription] = useState('')
     const [error, setError] = useState('')
 
     const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
@@ -61,10 +51,7 @@ function CourseModal({
                     &times;
                 </button>
 
-                <h2>
-                    {mode === 'create' && 'Create Course'}
-                    {mode === 'edit' && 'Edit Course'}
-                </h2>
+                <h2>Create Course</h2>
 
                 {error && (
                     <div className="bg-rose-100 border border-rose-400 text-rose-700 px-2 py-1 my-2 rounded relative">
@@ -103,7 +90,7 @@ function CourseModal({
                     type="submit"
                     className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA] self-center mt-4"
                 >
-                    {mode === 'create' ? 'Create' : 'Save Changes'}
+                    Create Course
                 </DefaultButton>
             </form>
         </div>

@@ -16,7 +16,6 @@ function Courses() {
     const [isLoading, setIsLoading] = useState(true)
 
     const [isModalOpen, setIsModalOpen] = useState(false)
-    const [modalMode, setModalMode] = useState<'create' | 'edit'>('create')
     const [selectedCourse, setSelectedCourse] = useState<Course | null>(null)
 
     useEffect(() => {
@@ -36,14 +35,7 @@ function Courses() {
     }, [])
 
     const openCreateModal = useCallback(() => {
-        setModalMode('create')
         setSelectedCourse(null)
-        setIsModalOpen(true)
-    }, [])
-
-    const openEditModal = useCallback((courseData: Course) => {
-        setModalMode('edit')
-        setSelectedCourse(courseData)
         setIsModalOpen(true)
     }, [])
 
@@ -65,24 +57,11 @@ function Courses() {
 
     const handleSaveCourse = async (courseData: Course) => {
         try {
-            if (modalMode === 'edit') {
-                const updatedCourse = await apiService.update<Course>(
-                    'courses',
-                    courseData.id,
-                    courseData
-                )
-                setData((prev: Course[]) =>
-                    prev.map((item) =>
-                        item.id === updatedCourse.id ? updatedCourse : item
-                    )
-                )
-            } else if (modalMode === 'create') {
-                const newCourse = await apiService.create<Course>(
-                    'courses',
-                    courseData
-                )
-                setData((prevData: Course[]) => [newCourse, ...prevData])
-            }
+            const newCourse = await apiService.create<Course>(
+                'courses',
+                courseData
+            )
+            setData((prevData: Course[]) => [newCourse, ...prevData])
         } catch (err) {
             console.error('Failed to save course:', err)
         }
@@ -146,8 +125,6 @@ function Courses() {
                     key={selectedCourse ? selectedCourse.id : 'create-modal'}
                     isOpen={isModalOpen}
                     onClose={() => setIsModalOpen(false)}
-                    mode={modalMode}
-                    initialData={selectedCourse}
                     onSave={handleSaveCourse}
                 />
             )}
