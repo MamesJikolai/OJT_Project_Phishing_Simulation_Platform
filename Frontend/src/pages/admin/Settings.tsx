@@ -8,7 +8,7 @@ function Settings() {
         <div className="flex flex-col items-start p-4 md:p-8 w-full box-border">
             <Message text="Settings" />
 
-            <div className="flex flex-row justify-center flex-wrap gap-8 md:gap-16 w-full">
+            <div className="flex flex-row justify-center flex-wrap gap-4 md:gap-8 w-full">
                 <PlatformConfigurationForm />
 
                 <SMTPConfigurationForm />
