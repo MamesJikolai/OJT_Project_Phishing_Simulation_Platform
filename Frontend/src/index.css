@@ -1,5 +1,21 @@
 @import 'tailwindcss';
 
+/* 
+  * Primary/Main:           #024C89
+  * Primary/Light:          #3572A1
+  * Primary/Surface:        #E6EDF3
+  * Secondary/Accent:       #C5A059
+  * Secondary/Support:      #00A3AD
+  * Neutral/Ink Dark:       #121212
+  * Neutral/Ink Medium:     #4A4A4A
+  * Neutral/Border:         #DDE2E5
+  * Neutral/Surface:        #F8F9FA
+  * Semantic/Success:       #28A745
+  * Semantic/Error:         #DC3545
+  * Semantic/Warning:       #FFC107
+  * Semantic/Info:          #17A2B8
+*/
+
 html {
     font-family: Roboto;
     color: #121212;
