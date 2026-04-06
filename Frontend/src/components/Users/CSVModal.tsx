@@ -7,7 +7,7 @@ import TextInput from '../TextInput.tsx'
 interface CsvUploadModalProps {
     isOpen: boolean
     onClose: () => void
-    onUploadSuccess: () => void // So we can refresh the table
+    onUploadSuccess: () => void
 }
 
 function CsvUploadModal({

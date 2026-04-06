@@ -151,9 +151,6 @@ function Users() {
                 <DefaultButton
                     className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA] self-start mb-4"
                     onClick={() => {
-                        console.log(
-                            'Button clicked! isCsvModalOpen should be true now.'
-                        )
                         setIsCsvModalOpen(true)
                     }}
                 >
