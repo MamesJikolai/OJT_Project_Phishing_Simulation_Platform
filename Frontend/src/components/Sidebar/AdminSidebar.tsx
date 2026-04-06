@@ -91,9 +91,12 @@ function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
     )
 
     const handleLogout = () => {
-        logout()
-        if (onCloseMobile) onCloseMobile()
         navigate('/home')
+        if (onCloseMobile) onCloseMobile()
+
+        setTimeout(() => {
+            logout()
+        }, 200)
     }
 
     return (
