@@ -135,6 +135,7 @@ CORS_ALLOWED_ORIGINS = [
     'https://ojt-project-phishingops.vercel.app',
 ]
 CORS_ALLOW_CREDENTIALS = True
+CSRF_TRUSTED_ORIGINS = ['https://ojt-project-phishingops-production.up.railway.app', 'http://.127.0.0.1:5173']
 
 # ── Django-Q2 ───────────────────────────────────────
 # Run the worker with: python manage.py qcluster
