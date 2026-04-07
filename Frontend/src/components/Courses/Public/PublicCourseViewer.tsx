@@ -23,6 +23,7 @@ function PublicCourseViewer({ role }: { role: string }) {
     const [selectedQuiz, setSelectedQuiz] = useState<QuizPublic | null>(null)
 
     const lessonAlertShownRef = useRef(false)
+    const courseCompletedAlertShownRef = useRef(false)
 
     const openQuizModal = useCallback((quizData: QuizPublic) => {
         setSelectedQuiz(quizData)
@@ -32,7 +33,7 @@ function PublicCourseViewer({ role }: { role: string }) {
     const handleLessonCompleted = useCallback(
         async (lessonId: number) => {
             if (!courseId) return
-            if (role !== 'public') return // Only track progress for actual employees
+            if (role !== 'public') return
 
             const token = localStorage.getItem('lms_token')
 
@@ -59,6 +60,12 @@ function PublicCourseViewer({ role }: { role: string }) {
                 console.log(`Lesson ${lessonId} progress saved!`, response)
 
                 if (response.all_lessons_done) {
+                    if (showQuiz || courseCompletedAlertShownRef.current) {
+                        return
+                    }
+
+                    courseCompletedAlertShownRef.current = true
+
                     if (course?.quiz) {
                         alert(
                             'Congratulations! You have completed all lessons for this course. You can now take the short quiz to test your knowledge!'
@@ -74,7 +81,7 @@ function PublicCourseViewer({ role }: { role: string }) {
                 console.error('Failed to save lesson progress:', err)
             }
         },
-        [courseId, role, course, setShowQuiz]
+        [courseId, role, course, showQuiz, setShowQuiz]
     )
 
     useEffect(() => {
