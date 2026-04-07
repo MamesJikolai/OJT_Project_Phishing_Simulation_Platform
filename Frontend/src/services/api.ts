@@ -4,7 +4,7 @@ import axios from 'axios'
 
 // The base URL will point to your React dev server for public files,
 // or your Django server when the mock is disabled.
-const BASE_URL = 'http://localhost:8000/api/v1/'
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1/'
 
 export const apiClient = axios.create({
     baseURL: BASE_URL,
