@@ -744,7 +744,18 @@ class LMSSessionView(APIView):
         if all_lessons_done and quiz_attempt and quiz_attempt.passed:
             if not target.lms_completed_at:
                 target.lms_completed_at = timezone.now()
-                target.quiz_score       = quiz_attempt.score
+                # Store average of best scores across all quizzes
+                from django.db.models import Max
+                best_scores = list(
+                    QuizAttempt.objects
+                    .filter(target=target)
+                    .values('quiz')
+                    .annotate(best=Max('score'))
+                    .values_list('best', flat=True)
+                )
+                target.quiz_score = round(
+                    sum(best_scores) / len(best_scores), 1
+                ) if best_scores else quiz_attempt.score
                 target.save(update_fields=['lms_completed_at', 'quiz_score'])
 
         return Response({
@@ -1034,8 +1045,24 @@ class LMSSubmitQuizView(APIView):
             answers={str(k): v for k, v in answers.items()},
         )
 
-        # Update target summary
-        target.quiz_score = score
+        # Update target quiz_score with the average of best scores
+        # across all quizzes this target has attempted.
+        # This handles multiple courses/quizzes correctly.
+        from django.db.models import Max
+        best_scores = (
+            QuizAttempt.objects
+            .filter(target=target)
+            .values('quiz')
+            .annotate(best=Max('score'))
+            .values_list('best', flat=True)
+        )
+        if best_scores:
+            target.quiz_score = round(
+                sum(best_scores) / len(best_scores), 1
+            )
+        else:
+            target.quiz_score = score
+
         if passed and not target.lms_completed_at:
             target.lms_completed_at = timezone.now()
         target.save(update_fields=['quiz_score', 'lms_completed_at'])
@@ -1094,7 +1121,19 @@ class DashboardView(APIView):
         total_sent     = CampaignTarget.objects.filter(email_sent_at__isnull=False).count()
         total_clicked  = CampaignTarget.objects.filter(link_clicked_at__isnull=False).count()
         total_completed = CampaignTarget.objects.filter(lms_completed_at__isnull=False).count()
-        avg_score      = QuizAttempt.objects.aggregate(a=Avg('score'))['a'] or 0.0
+        # Average of each target's BEST score per quiz
+        # Step 1: for each (target, quiz) pair, get the max score
+        # Step 2: average those max scores
+        from django.db.models import Max, OuterRef, Subquery
+        best_per_target_quiz = (
+            QuizAttempt.objects
+            .values('target', 'quiz')
+            .annotate(best=Max('score'))
+            .values('best')
+        )
+        avg_score = best_per_target_quiz.aggregate(
+            a=Avg('best')
+        )['a'] or 0.0
 
         recent_campaigns = Campaign.objects.order_by('-created_at')[:5]
         recent_clicks    = CampaignTarget.objects.filter(
@@ -1133,6 +1172,17 @@ class AnalyticsView(APIView):
         total_sent    = CampaignTarget.objects.filter(email_sent_at__isnull=False).count()
         total_clicked = CampaignTarget.objects.filter(link_clicked_at__isnull=False).count()
         total_completed = CampaignTarget.objects.filter(lms_completed_at__isnull=False).count()
+
+        # Average of best score per (target, quiz) — same logic as dashboard
+        best_per_target_quiz = (
+            QuizAttempt.objects
+            .values('target', 'quiz')
+            .annotate(best=Max('score'))
+            .values('best')
+        )
+        avg_score = best_per_target_quiz.aggregate(
+            a=Avg('best')
+        )['a'] or 0.0
 
         campaigns = Campaign.objects.annotate(
             sent_count=Count('targets', filter=Q(targets__email_sent_at__isnull=False)),
@@ -1173,6 +1223,7 @@ class AnalyticsView(APIView):
                 'total_completed':  total_completed,
                 'click_rate':       round(total_clicked / total_sent * 100, 1) if total_sent else 0,
                 'completion_rate':  round(total_completed / total_clicked * 100, 1) if total_clicked else 0,
+                'avg_quiz_score':   round(avg_score, 1),
             },
             'campaigns':       campaigns_data,
             'department_stats': list(dept_stats),
