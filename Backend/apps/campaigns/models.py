@@ -73,6 +73,16 @@ class EmailTemplate(models.Model):
         null=True,
         help_text="Company name used in email templates (for {{ company_name }})"
     )
+    signature_image = models.ImageField(
+        upload_to='template_signatures/',
+        null=True,
+        blank=True,
+        help_text=(
+            'Optional signature image (e.g. company logo or sender signature). '
+            'Automatically appended to the bottom of every email sent using this template. '
+            'Embedded as a base64 inline image — no external hosting needed.'
+        )
+    )
 
     class Meta:
         ordering = ['-created_at']
@@ -167,13 +177,13 @@ class CampaignTarget(models.Model):
     One record per employee per campaign.
     Employees have no accounts — identified only by their UUID token.
     """
-    campaign   = models.ForeignKey(Campaign, on_delete=models.CASCADE, related_name='targets')
-    email      = models.EmailField()
-    full_name  = models.CharField(max_length=255, blank=True)
-    department = models.CharField(max_length=255, blank=True)
-    position   = models.CharField(max_length=255, blank=True)
+    campaign      = models.ForeignKey(Campaign, on_delete=models.CASCADE, related_name='targets')
+    email         = models.EmailField()
+    full_name     = models.CharField(max_length=255, blank=True)
+    department    = models.CharField(max_length=255, blank=True)
+    position      = models.CharField(max_length=255, blank=True)
     business_unit = models.CharField(max_length=255, blank=True)
-    manager = models.CharField(max_length=255, blank=True)
+    manager       = models.CharField(max_length=255, blank=True)
     manager_email = models.EmailField(blank=True)
 
     # Unique token embedded in the phishing link

@@ -31,12 +31,12 @@ class CampaignAdminForm(forms.ModelForm):
     )
     csv_file = forms.FileField(
         required=False,
-        label='Upload Targets (CSV or XLSX)',
+        label='Upload Targets (CSV)',
         help_text=(
-            'Optional. Upload a CSV or Excel file to add targets immediately '
+            'Optional. Upload a CSV file to add targets immediately '
             'after saving. '
-            'Required column: email (case-insensitive). '
-            'Optional columns: full_name, department, position.'
+            "Required column: 'email' (case-insensitive). "
+            "Optional columns: 'full_name', 'department', 'position', 'business_unit', 'manager', 'manager_email'."
         ),
     )
 
@@ -146,119 +146,37 @@ class CampaignAdminForm(forms.ModelForm):
 
 # ── Email Template Admin ───────────────────────────────────────────────────────
 
-class TinyMCEWidget(forms.Textarea):
-    """
-    Custom widget loading TinyMCE 6 from CDN — no django-tinymce package needed.
-    Supports rich text: fonts, sizes, colours, bold/italic, links, images (base64).
-    """
-    def __init__(self, *args, **kwargs):
-        kwargs.setdefault('attrs', {})
-        kwargs['attrs'].update({'style': 'display:none;', 'rows': 30})
-        super().__init__(*args, **kwargs)
-
-    def render(self, name, value, attrs=None, renderer=None):
-        textarea_html = super().render(name, value, attrs, renderer)
-        editor_id     = (attrs or {}).get('id', f'id_{name}')
-        script = f"""
-<script src="https://cdn.jsdelivr.net/npm/tinymce@6/tinymce.min.js"></script>
-<script>
-(function() {{
-    function init() {{
-        if (typeof tinymce === 'undefined') {{ setTimeout(init, 150); return; }}
-        tinymce.remove('#{editor_id}');
-        tinymce.init({{
-            selector: '#{editor_id}',
-            height: 520,
-            menubar: 'file edit view insert format tools',
-            promotion: false,
-            branding: false,
-            plugins: [
-                'advlist','autolink','lists','link','image','charmap',
-                'searchreplace','visualblocks','code','fullscreen',
-                'insertdatetime','table','wordcount','emoticons'
-            ],
-            toolbar: (
-                'undo redo | fontfamily fontsize | ' +
-                'bold italic underline strikethrough | ' +
-                'forecolor backcolor | ' +
-                'alignleft aligncenter alignright alignjustify | ' +
-                'bullist numlist outdent indent | ' +
-                'link image | code fullscreen'
-            ),
-            font_family_formats: (
-                'Arial=arial,helvetica,sans-serif;' +
-                'Courier New=courier new,courier,monospace;' +
-                'Georgia=georgia,palatino;' +
-                'Tahoma=tahoma,arial,helvetica,sans-serif;' +
-                'Times New Roman=times new roman,times;' +
-                'Verdana=verdana,geneva;'
-            ),
-            fontsize_formats: '8pt 9pt 10pt 11pt 12pt 14pt 16pt 18pt 24pt 36pt 48pt',
-            content_style: (
-                'body {{ font-family: Arial, sans-serif; font-size: 14px; ' +
-                'line-height: 1.6; color: #333; margin: 16px; }}'
-            ),
-            image_title: false,
-            automatic_uploads: false,
-            file_picker_types: 'image',
-            file_picker_callback: function(cb, value, meta) {{
-                var input = document.createElement('input');
-                input.setAttribute('type', 'file');
-                input.setAttribute('accept', 'image/*');
-                input.onchange = function() {{
-                    var file = this.files[0];
-                    var reader = new FileReader();
-                    reader.onload = function() {{
-                        var id = 'blobid' + (new Date()).getTime();
-                        var blobCache = tinymce.activeEditor.editorUpload.blobCache;
-                        var base64 = reader.result.split(',')[1];
-                        var blobInfo = blobCache.create(id, file, base64);
-                        blobCache.add(blobInfo);
-                        cb(blobInfo.blobUri(), {{ title: file.name }});
-                    }};
-                    reader.readAsDataURL(file);
-                }};
-                input.click();
-            }},
-            relative_urls: false,
-            remove_script_host: false,
-            convert_urls: false,
-            setup: function(editor) {{
-                editor.on('change', function() {{ editor.save(); }});
-            }}
-        }});
-    }}
-    init();
-}})();
-</script>"""
-        return textarea_html + script
-
-
 class EmailTemplateAdminForm(forms.ModelForm):
     body_html = forms.CharField(
-        widget=TinyMCEWidget(),
-        label='Email Body',
+        widget=forms.Textarea(attrs={
+            'rows': 30,
+            'cols': 80,
+            'style': 'font-family:monospace;width:100%;',
+        }),
+        label='Email Body (HTML)',
         help_text=mark_safe(
-            '<strong>Rich text editor:</strong> Use the toolbar to format text, '
-            'change fonts/sizes, add colours, insert links, and embed images '
-            '(click the image icon to upload — images are embedded as base64).<br><br>'
-            '<strong>Available variables</strong> — type anywhere in the body:<br>'
+            '<strong>Plain text mode:</strong> Just type normally. '
+            'Press Enter for a new line, press Enter twice for a new paragraph.<br><br>'
+            '<strong>Clickable link with custom text:</strong> '
+            'Use <code>[display text](url)</code> syntax — e.g. '
+            '<code>[click here]({{ phishing_link }})</code><br><br>'
+            '<strong>HTML mode:</strong> Write full HTML for custom layouts. '
+            'Auto-detected when any HTML tags are present.<br><br>'
+            '<strong>Available variables:</strong><br>'
             '<code>{{ target_name }}</code> &nbsp; '
             '<code>{{ target_email }}</code> &nbsp; '
             '<code>{{ target_department }}</code> &nbsp; '
             '<code>{{ phishing_link }}</code> &nbsp; '
             '<code>{{ company_name }}</code> &nbsp; '
             '<code>{{ campaign_name }}</code><br><br>'
-            '<strong>Phishing link with custom text:</strong> '
-            'Select text, click the link icon, and paste <code>{{ phishing_link }}</code> '
-            'as the URL — or use plain text mode syntax: '
-            '<code>[click here]({{ phishing_link }})</code>'
+            '<strong>Signature image:</strong> Upload an image below — it will be '
+            'automatically appended to the bottom of every email sent with this template.'
         ),
     )
 
     class Meta:
         model  = EmailTemplate
-        fields = '__all__' 
+        fields = '__all__'
 
 
 @admin.register(EmailTemplate)
@@ -279,6 +197,15 @@ class EmailTemplateAdmin(admin.ModelAdmin):
                 'Available variables: {{ target_name }}, {{ target_email }}, '
                 '{{ target_department }}, {{ phishing_link }}, '
                 '{{ company_name }}, {{ campaign_name }}'
+            ),
+        }),
+        ('Signature Image', {
+            'fields': ('signature_image',),
+            'description': (
+                'Optional. Upload a signature image (e.g. company logo, '
+                'sender signature graphic). It will be embedded inline at the '
+                'bottom of every email sent using this template. '
+                'Supported formats: PNG, JPG, GIF. Recommended max width: 400px.'
             ),
         }),
         ('Timestamps', {
@@ -748,8 +675,8 @@ class CampaignAdmin(admin.ModelAdmin):
             'fields': ('csv_file',),
             'description': (
                 'Upload a CSV file to bulk-add targets. '
-                'Required column: email (case-insensitive). '
-                'Optional: full_name, department, position. '
+                "Required column: 'email' (case-insensitive). "
+                "Optional: 'full_name', 'department', 'position', 'business_unit', 'manager', 'manager_email'. "
                 'Duplicate emails are skipped.'
             ),
         }),
@@ -817,7 +744,7 @@ class CampaignTargetAdmin(admin.ModelAdmin):
         ('Employee Info', {
             'fields': (
                 'campaign', 'email', 'full_name', 'department',
-                'position', 'business_unit', 'manager', 'manager_email'
+                'position', 'business_unit', 'manager', 'manager_email',
             )
         }),
         ('Phishing Link', {

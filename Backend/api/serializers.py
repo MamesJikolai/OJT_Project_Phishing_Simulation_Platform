@@ -33,17 +33,27 @@ class EmailTemplateSerializer(serializers.ModelSerializer):
     created_by_username = serializers.CharField(
         source='created_by.username', read_only=True, default=None
     )
+    signature_image_url = serializers.SerializerMethodField()
 
     class Meta:
         model  = EmailTemplate
         fields = [
             'id', 'name', 'subject', 'sender_name', 'body_html',
+            'signature_image', 'signature_image_url',
             'created_by', 'created_by_username', 'company_name', 'created_at', 'updated_at',
         ]
-        read_only_fields = ['id', 'created_at', 'updated_at', 'created_by_username']
+        read_only_fields = ['id', 'created_at', 'updated_at',
+                            'created_by_username', 'signature_image_url']
         extra_kwargs = {
             'created_by': {'read_only': True},
+            'signature_image': {'required': False},
         }
+
+    def get_signature_image_url(self, obj):
+        request = self.context.get('request')
+        if obj.signature_image and request:
+            return request.build_absolute_uri(obj.signature_image.url)
+        return None
 
 
 # ── LMS ────────────────────────────────────────────────────────────────────────

@@ -83,6 +83,45 @@ def _plain_to_html(text: str) -> str:
     return header + body_content + footer
 
 
+def _append_signature(html_body: str, template) -> str:
+    """
+    If the template has a signature_image, embed it as a base64 inline
+    <img> tag appended to the bottom of the email body.
+    Works for both plain-text-converted HTML and hand-written HTML bodies.
+    """
+    if not template.signature_image:
+        return html_body
+
+    try:
+        import base64
+        import mimetypes
+
+        sig_path = template.signature_image.path
+        mime, _  = mimetypes.guess_type(sig_path)
+        mime     = mime or 'image/png'
+
+        with open(sig_path, 'rb') as f:
+            b64 = base64.b64encode(f.read()).decode('ascii')
+
+        sig_html = (
+            '<div style="margin-top:24px;padding-top:16px;'
+            'border-top:1px solid #e0e0e0;">'
+            f'<img src="data:{mime};base64,{b64}" '
+            'style="max-width:400px;height:auto;display:block;" '
+            'alt="Signature" />'
+            '</div>'
+        )
+
+        # Insert before </body> if present, otherwise just append
+        if '</body>' in html_body:
+            return html_body.replace('</body>', sig_html + '</body>', 1)
+        return html_body + sig_html
+
+    except Exception as exc:
+        logger.warning(f'Signature image could not be embedded: {exc}')
+        return html_body
+
+
 def render_body(body_html: str, target, campaign) -> str:
     """
     Replace {{ variable }} placeholders and ensure the result is
@@ -184,6 +223,7 @@ def _send_single_email(target_id: int):
         )
 
         html_body   = render_body(template.body_html, target, campaign)
+        html_body   = _append_signature(html_body, template)
         from_header = f'{template.sender_name} <{campaign.from_email}>'
 
         msg = EmailMultiAlternatives(
