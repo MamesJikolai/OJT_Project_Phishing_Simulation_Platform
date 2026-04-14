@@ -189,7 +189,7 @@ const availableVariables = [
 ]
 
 const bodyDescription = (
-    <div className="flex flex-col gap-4 mt-2">
+    <div className="flex flex-col gap-4 mt-2 mb-4">
         <div>
             <span className="font-medium text-[#121212] block mb-2">
                 Available variables:
