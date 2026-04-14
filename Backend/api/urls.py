@@ -6,8 +6,8 @@ from . import views
 
 # ── DRF Router — auto-generates CRUD URLs ─────────────────────────────────────
 router = DefaultRouter()
-router.register(r'templates',                    views.EmailTemplateViewSet,    basename='template')
-router.register(r'campaigns',                    views.CampaignViewSet,         basename='campaign')
+router.register(r'templates', views.EmailTemplateViewSet, basename='template')
+router.register(r'campaigns', views.CampaignViewSet, basename='campaign')
 router.register(
     r'campaigns/(?P<campaign_pk>[^/.]+)/targets',
     views.CampaignTargetViewSet,
@@ -49,10 +49,10 @@ urlpatterns = [
     path('', include(router.urls)),
 
     # ── Auth ───────────────────────────────────────────────────────────────────
-    path('auth/login/',   views.LoginView.as_view(),   name='login'),
-    path('auth/refresh/', views.RefreshView.as_view(),  name='refresh'),
-    path('auth/logout/',  views.LogoutView.as_view(),   name='logout'),
-    path('auth/me/',              views.MeView.as_view(),             name='me'),
+    path('auth/login/',   views.LoginView.as_view(), name='login'),
+    path('auth/refresh/', views.RefreshView.as_view(), name='refresh'),
+    path('auth/logout/',  views.LogoutView.as_view(), name='logout'),
+    path('auth/me/', views.MeView.as_view(), name='me'),
     path('auth/change-password/', views.ChangePasswordView.as_view(), name='change-password'),
 
     # ── All targets (user management — across all campaigns) ──────────────────
@@ -62,21 +62,22 @@ urlpatterns = [
     path('dashboard/', views.DashboardView.as_view(), name='dashboard'),
 
     # ── Analytics ─────────────────────────────────────────────────────────────
-    path('analytics/',                                  views.AnalyticsView.as_view(),       name='analytics'),
+    path('analytics/', views.AnalyticsView.as_view(), name='analytics'),
     path('analytics/campaigns/<int:campaign_pk>/export/', views.ExportCampaignCSVView.as_view(), name='export-campaign'),
-    path('analytics/export/',                           views.ExportAllCSVView.as_view(),    name='export-all'),
-    path('analytics/quiz-attempts/',                    views.QuizAttemptsView.as_view(),    name='quiz-attempts'),
+    path('analytics/export/', views.ExportAllCSVView.as_view(), name='export-all'),
+    path('analytics/quiz-attempts/', views.QuizAttemptsView.as_view(), name='quiz-attempts'),
 
     # ── LMS (employee-facing, no login required) ──────────────────────────────
-    path('lms/session/',                               views.LMSSessionView.as_view(),       name='lms-session'),
-    path('lms/lessons/<int:lesson_id>/complete/',      views.LMSCompleteLessonView.as_view(), name='lms-complete-lesson'),
-    path('lms/quiz/<int:quiz_id>/submit/',             views.LMSSubmitQuizView.as_view(),    name='lms-submit-quiz'),
+    path('lms/session/', views.LMSSessionView.as_view(), name='lms-session'),
+    path('lms/lessons/<int:lesson_id>/complete/', views.LMSCompleteLessonView.as_view(), name='lms-complete-lesson'),
+    path('lms/quiz/<int:quiz_id>/submit/', views.LMSSubmitQuizView.as_view(), name='lms-submit-quiz'),
 
     # ── Platform Settings ──────────────────────────────────────────────────────
-    path('settings/',           views.PlatformSettingsView.as_view(), name='settings'),
-    path('settings/smtp-test/', views.SMTPTestView.as_view(),         name='smtp-test'),
+    path('settings/', views.PlatformSettingsView.as_view(), name='settings'),
+    path('settings/reminder-smtp/', views.ReminderSMTPSettingsView.as_view(), name='reminder-smtp'),
+    path('settings/smtp-test/', views.SMTPTestView.as_view(), name='smtp-test'),
 
     # ── User Management (admin/HR accounts) ───────────────────────────────────
-    path('users/',        views.UserListView.as_view(),   name='user-list'),
+    path('users/', views.UserListView.as_view(),   name='user-list'),
     path('users/<int:pk>/', views.UserDetailView.as_view(), name='user-detail'),
 ]

@@ -1286,6 +1286,7 @@ class ExportAllCSVView(APIView):
         writer = csv.writer(response)
         writer.writerow([
             'Campaign', 'Full Name', 'Email', 'Department', 'Position',
+            'Business Unit', 'Manager', 'Manager Email'
             'Email Sent', 'Email Failed', 'Link Clicked',
             'LMS Started', 'LMS Completed', 'Quiz Score',
         ])
@@ -1293,6 +1294,7 @@ class ExportAllCSVView(APIView):
             writer.writerow([
                 t.campaign.name,
                 t.full_name, t.email, t.department, t.position,
+                t.business_unit, t.manager, t.manager_email,
                 localtime(t.email_sent_at).strftime('%Y-%m-%d %H:%M') if t.email_sent_at else '',
                 'Yes' if t.email_failed else 'No',
                 localtime(t.link_clicked_at).strftime('%Y-%m-%d %H:%M') if t.link_clicked_at else '',
@@ -1324,7 +1326,7 @@ class QuizAttemptsView(APIView):
 # ═══════════════════════════════════════════════════════════════════════════════
 
 from apps.settings_app.models import PlatformSettings
-from .serializers import PlatformSettingsSerializer, SMTPTestSerializer
+from .serializers import PlatformSettingsSerializer, ReminderSMTPSettingsSerializer, SMTPTestSerializer
 from django.core.mail import EmailMessage
 from django.core.mail.backends.smtp import EmailBackend as SMTPBackend
 
@@ -1365,20 +1367,10 @@ class PlatformSettingsView(APIView):
             'default_from_name', 'session_expiry_days', 'allow_quiz_retake',
             'landing_title', 'landing_message1',
             'landing_message2', 'landing_button_text', 'lms_path',
-            # Reminder / notification
-            'reminder_enabled', 'reminder_days', 'manager_notify_enabled',
-            'reminder_from_name', 'reminder_from_email',
-            'reminder_smtp_host', 'reminder_smtp_port',
-            'reminder_smtp_user', 'reminder_smtp_use_tls', 'reminder_smtp_use_ssl',
         ]
         for field in updatable:
             if field in d:
                 setattr(settings_obj, field, d[field])
-
-        # reminder_smtp_password is write-only — handle separately via property
-        reminder_pw = request.data.get('reminder_smtp_password', '').strip()
-        if reminder_pw:
-            settings_obj.reminder_smtp_password = reminder_pw
 
         if 'logo' in request.FILES:
             settings_obj.logo = request.FILES['logo']
@@ -1388,6 +1380,59 @@ class PlatformSettingsView(APIView):
             PlatformSettingsSerializer(settings_obj, context={'request': request}).data
         )
 
+class ReminderSMTPSettingsView(APIView):
+    """
+    GET   /api/v1/settings/reminder-smtp/  — retrieve config
+    PATCH /api/v1/settings/reminder-smtp/  — update config (admin only)
+    """
+    permission_classes = [IsAdminRole]
+
+    def get(self, request):
+        settings_obj = PlatformSettings.get()
+
+        return Response({
+            'reminder_enabled': settings_obj.reminder_enabled,
+            'reminder_days': settings_obj.reminder_days,
+            'manager_notify_enabled': settings_obj.manager_notify_enabled,
+            'reminder_from_name': settings_obj.reminder_from_name,
+            'reminder_from_email': settings_obj.reminder_from_email,
+            'reminder_smtp_host': settings_obj.reminder_smtp_host,
+            'reminder_smtp_port': settings_obj.reminder_smtp_port,
+            'reminder_smtp_user': settings_obj.reminder_smtp_user,
+            'reminder_smtp_use_tls': settings_obj.reminder_smtp_use_tls,
+            'reminder_smtp_use_ssl': settings_obj.reminder_smtp_use_ssl,
+        })
+
+    def patch(self, request):
+        settings_obj = PlatformSettings.get()
+
+        serializer = ReminderSMTPSettingsSerializer(
+            data=request.data,
+            partial=True
+        )
+        serializer.is_valid(raise_exception=True)
+
+        d = serializer.validated_data
+
+        # Safety: prevent invalid TLS/SSL combo
+        if d.get('reminder_smtp_use_tls') and d.get('reminder_smtp_use_ssl'):
+            return Response(
+                {'error': 'Cannot enable both TLS and SSL.'},
+                status=400
+            )
+
+        for field, value in d.items():
+            if field == 'reminder_smtp_password':
+                settings_obj.reminder_smtp_password = value
+            else:
+                setattr(settings_obj, field, value)
+
+        settings_obj.save()
+
+        return Response({
+            'status': 'ok',
+            'message': 'Reminder SMTP configuration updated successfully.'
+        })
 
 class SMTPTestView(APIView):
     """

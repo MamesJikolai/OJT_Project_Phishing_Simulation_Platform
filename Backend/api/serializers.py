@@ -387,18 +387,6 @@ class PlatformSettingsSerializer(serializers.Serializer):
     landing_button_text  = serializers.CharField(max_length=100)
     # Logo
     logo_url             = serializers.SerializerMethodField()
-    # Reminder / notification settings
-    reminder_enabled       = serializers.BooleanField()
-    reminder_days          = serializers.IntegerField(min_value=1)
-    manager_notify_enabled = serializers.BooleanField()
-    # Reminder SMTP (write-only password — never returned)
-    reminder_from_name     = serializers.CharField(max_length=255, allow_blank=True)
-    reminder_from_email    = serializers.EmailField(allow_blank=True)
-    reminder_smtp_host     = serializers.CharField(max_length=255, allow_blank=True)
-    reminder_smtp_port     = serializers.IntegerField(default=587)
-    reminder_smtp_user     = serializers.CharField(max_length=255, allow_blank=True)
-    reminder_smtp_use_tls  = serializers.BooleanField()
-    reminder_smtp_use_ssl  = serializers.BooleanField()
     updated_at             = serializers.DateTimeField(read_only=True)
 
     def get_logo_url(self, obj):
@@ -407,6 +395,19 @@ class PlatformSettingsSerializer(serializers.Serializer):
             return request.build_absolute_uri(obj.logo.url)
         return None
 
+class ReminderSMTPSettingsSerializer(serializers.Serializer):
+    reminder_enabled = serializers.BooleanField()
+    reminder_days = serializers.IntegerField(min_value=1)
+    manager_notify_enabled = serializers.BooleanField()
+
+    reminder_from_name = serializers.CharField()
+    reminder_from_email = serializers.EmailField()
+    reminder_smtp_host = serializers.CharField()
+    reminder_smtp_port = serializers.IntegerField(default=587)
+    reminder_smtp_user = serializers.CharField()
+    reminder_smtp_password = serializers.CharField(write_only=True)
+    reminder_smtp_use_tls = serializers.BooleanField(default=True)
+    reminder_smtp_use_ssl = serializers.BooleanField(default=False)
 
 class SMTPTestSerializer(serializers.Serializer):
     smtp_host     = serializers.CharField()
