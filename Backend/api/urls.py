@@ -57,6 +57,7 @@ urlpatterns = [
 
     # ── All targets (user management — across all campaigns) ──────────────────
     path('targets/', views.AllTargetsView.as_view(), name='all-targets'),
+    path('targets/<int:pk>/', views.AllTargetsView.as_view(), name='all-targets-list'),
 
     # ── Dashboard ─────────────────────────────────────────────────────────────
     path('dashboard/', views.DashboardView.as_view(), name='dashboard'),

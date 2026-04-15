@@ -457,6 +457,15 @@ class AllTargetsView(APIView):
 
         serializer = CampaignTargetSerializer(qs, many=True)
         return Response(serializer.data)
+    
+    def delete(self, request, pk):
+        """Allows deleting a target by ID: DELETE /api/v1/targets/<pk>/"""
+        try:
+            target = CampaignTarget.objects.get(pk=pk)
+            target.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except CampaignTarget.DoesNotExist:
+            return Response({'error': 'Target not found'}, status=404)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
