@@ -43,6 +43,12 @@ function TemplateModal({
         setEmailTemplateData((prev) => ({ ...prev, [name]: value }))
     }
 
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            setSignatureFile(e.target.files[0])
+        }
+    }
+
     const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault()
         setError('')
@@ -58,7 +64,7 @@ function TemplateModal({
             return
         }
 
-        onSave(emailTemplateData)
+        onSave(emailTemplateData, signatureFile)
         onClose()
     }
 

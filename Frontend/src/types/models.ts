@@ -121,7 +121,7 @@ export interface EmailTemplate {
     subject: string
     sender_name: string
     body_html: string
-    email_signature: string
+    signature_image_url: string
     created_by?: number
     created_by_username?: string
     company_name: string

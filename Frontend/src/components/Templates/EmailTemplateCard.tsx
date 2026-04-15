@@ -39,6 +39,13 @@ function EmailTemplateCard({
                             <p className="whitespace-pre-wrap">
                                 {item.body_html}
                             </p>
+                            {item.signature_image_url && (
+                                <img
+                                    src={item.signature_image_url}
+                                    alt={`${item.name} Signature`}
+                                    className="w-full max-w-[320px] object-contain my-4"
+                                />
+                            )}
                         </div>
                         <p className="text-[12px]">
                             Created{' '}

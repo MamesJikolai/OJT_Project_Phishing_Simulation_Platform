@@ -37,40 +37,62 @@ function Templates() {
         setIsModalOpen(true)
     }, [])
 
-    const openViewModal = useCallback((templateData: EmailTemplate) => {
-        setModalMode('view')
-        setSelectedTemplate(templateData)
-        setIsModalOpen(true)
-    }, [])
-
     const openEditModal = useCallback((templateData: EmailTemplate) => {
         setModalMode('edit')
         setSelectedTemplate(templateData)
         setIsModalOpen(true)
     }, [])
 
-    const handleSaveTemplate = async (templateData: EmailTemplate) => {
+    const handleSaveTemplate = async (
+        templateData: EmailTemplate,
+        file: File | null
+    ) => {
         try {
+            let savedTemplate: EmailTemplate
+
             if (modalMode === 'edit') {
-                const updatedTemplate = await apiService.update<EmailTemplate>(
+                savedTemplate = await apiService.update<EmailTemplate>(
                     'templates',
                     templateData.id,
                     templateData
                 )
-
-                setData((prev: EmailTemplate[]) =>
-                    prev.map((item) =>
-                        item.id === updatedTemplate.id ? updatedTemplate : item
-                    )
-                )
-            } else if (modalMode === 'create') {
-                const newTemplate = await apiService.create<EmailTemplate>(
+            } else {
+                savedTemplate = await apiService.create<EmailTemplate>(
                     'templates',
                     templateData
                 )
+            }
 
+            if (file) {
+                const formData = new FormData()
+                formData.append('signature_image', file)
+
+                const uploadRes = (await apiService.uploadFile(
+                    `templates/${savedTemplate.id}/upload-signature/`,
+                    formData
+                )) as any
+
+                const newImageUrl =
+                    uploadRes?.data?.signature_image_url ||
+                    uploadRes?.signature_image_url
+
+                if (newImageUrl) {
+                    savedTemplate = {
+                        ...savedTemplate,
+                        signature_image_url: newImageUrl,
+                    }
+                }
+            }
+
+            if (modalMode === 'edit') {
+                setData((prev: EmailTemplate[]) =>
+                    prev.map((item) =>
+                        item.id === savedTemplate.id ? savedTemplate : item
+                    )
+                )
+            } else {
                 setData((prevData: EmailTemplate[]) => [
-                    newTemplate,
+                    savedTemplate,
                     ...prevData,
                 ])
             }
