@@ -175,6 +175,7 @@ export interface Landing {
     landing_message1: string
     landing_message2: string
     landing_button_text: string
+    include_logo: boolean
     logo_url: string
     updated_at: string
 }
@@ -186,6 +187,7 @@ export interface PlatformConfiguration {
     default_from_name: string
     session_expiry_days: number
     allow_quiz_retake: boolean
+    logo_url: string
 }
 
 export interface SMTPTest {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Message from '../../components/Message'
 import TextInput from '../../components/TextInput'
 import TextField from '../../components/TextField'
@@ -8,12 +8,19 @@ import { apiService } from '../../services/userService'
 import type { Landing } from '../../types/models'
 
 function LandingPage() {
-    const [title, setTitle] = useState('')
-    const [message1, setMessage1] = useState('')
-    const [message2, setMessage2] = useState('')
-    const [buttonText, setButtonText] = useState('')
+    const [landingPageData, setLandingPageData] = useState({
+        landing_title: '',
+        landing_message1: '',
+        landing_message2: '',
+        landing_button_text: '',
+        logo_url: '',
+        updated_at: '',
+    })
+    const [logoFile, setLogoFile] = useState<File | null>(null)
     const [error, setError] = useState('')
     const [isLoading, setIsLoading] = useState(true)
+
+    const fileInputRef = useRef<HTMLInputElement>(null)
 
     useEffect(() => {
         const fetchSettings = async () => {
@@ -21,10 +28,7 @@ function LandingPage() {
                 setIsLoading(true)
                 const data = await apiService.getSingleton<Landing>('settings')
 
-                setTitle(data.landing_title || '')
-                setMessage1(data.landing_message1 || '')
-                setMessage2(data.landing_message2 || '')
-                setButtonText(data.landing_button_text || '')
+                setLandingPageData(data || '')
             } catch (err) {
                 console.error('Failed to load landing page content:', err)
                 setError('Failed to load current settings.')
@@ -36,25 +40,86 @@ function LandingPage() {
         fetchSettings()
     }, [])
 
+    const handleLandingChange = (
+        e:
+            | React.ChangeEvent<HTMLInputElement>
+            | React.ChangeEvent<HTMLTextAreaElement>
+    ) => {
+        const { name, value } = e.target
+        setLandingPageData((prev) => ({
+            ...prev,
+            [name]: value,
+        }))
+    }
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            setLogoFile(e.target.files[0])
+
+            const localUrl = URL.createObjectURL(e.target.files[0])
+            setLandingPageData((prev) => ({ ...prev, logo_url: localUrl }))
+        }
+    }
+
+    const handleRemoveLogo = async () => {
+        try {
+            const formData = new FormData()
+            formData.append('remove_logo', 'true')
+
+            await apiService.updateSingleton('settings', formData)
+
+            // Clear local state
+            setLogoFile(null)
+            setLandingPageData((prev) => ({ ...prev, logo_url: '' }))
+            if (fileInputRef.current) fileInputRef.current.value = ''
+
+            alert('Logo removed successfully!')
+        } catch (err) {
+            console.error('Failed to remove logo:', err)
+            setError('Failed to remove logo from the database.')
+        }
+    }
+
     const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault()
         setError('')
 
-        if (!title || !message1 || !buttonText) {
+        if (
+            !landingPageData.landing_title ||
+            !landingPageData.landing_message1 ||
+            !landingPageData.landing_button_text
+        ) {
             setError('Fields are required!')
             return
         }
 
-        const payload = {
-            landing_title: title,
-            landing_message1: message1,
-            landing_message2: message2,
-            landing_button_text: buttonText,
-        }
-
         try {
-            await apiService.updateSingleton('settings', payload)
+            const formData = new FormData()
+
+            // Append standard text fields
+            formData.append('landing_title', landingPageData.landing_title)
+            formData.append(
+                'landing_message1',
+                landingPageData.landing_message1
+            )
+            formData.append(
+                'landing_message2',
+                landingPageData.landing_message2
+            )
+            formData.append(
+                'landing_button_text',
+                landingPageData.landing_button_text
+            )
+
+            // Append file if one was selected
+            if (logoFile) {
+                formData.append('logo', logoFile)
+            }
+
+            // Using FormData requires we send it directly
+            await apiService.updateSingleton('settings', formData)
             alert('Template saved to database!')
+            setLogoFile(null) // Reset file state after successful upload
         } catch (err) {
             console.error('Failed to save template:', err)
             setError('Failed to save template to the database.')
@@ -73,10 +138,10 @@ function LandingPage() {
         <div className="flex flex-col items-start p-4 md:p-8 w-full box-border">
             <Message text="Landing Page Content" />
 
-            <div className="flex justify-center gap-8 flex-wrap max-w-[100%]">
+            <div className="flex justify-center gap-8 flex-wrap w-full">
                 <form
                     onSubmit={handleSubmit}
-                    className="flex flex-col gap-2 bg-[#F8F9FA] w-150 h-fit px-[48px] py-[32px] rounded-xl drop-shadow-md"
+                    className="flex flex-col gap-2 bg-[#F8F9FA] w-full max-w-150 h-fit px-12 py-8 rounded-xl drop-shadow-md"
                 >
                     {error && (
                         <p className="text-[#DC3545] text-sm m-0">{error}</p>
@@ -84,35 +149,53 @@ function LandingPage() {
                     <TextInput
                         label="Title"
                         type="text"
+                        name="landing_title"
                         placeholder="Landing Page Title"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
+                        value={landingPageData.landing_title}
+                        onChange={handleLandingChange}
                         required
                         className="w-full"
                     />
+                    <div className="flex flex-col md:flex-row md:items-end gap-y-2 w-full">
+                        <TextInput
+                            label="Logo"
+                            type="file"
+                            accept="image/png, image/jpeg, image/webp, .png, .jpg, .jpeg, .webp"
+                            onChange={handleFileChange}
+                        />
+                        <DefaultButton
+                            children="Delete Logo"
+                            type="button"
+                            onClick={handleRemoveLogo}
+                            className="w-full md:w-fit whitespace-nowrap bg-[#DC3545] hover:bg-[#FF6B6B] text-[#F8F9FA] px-2! py-1!"
+                        />
+                    </div>
                     <TextField
                         label="Message 1"
+                        name="landing_message1"
                         placeholder="Message 1 Text"
-                        value={message1}
-                        onChange={(e) => setMessage1(e.target.value)}
+                        value={landingPageData.landing_message1}
+                        onChange={handleLandingChange}
                         required
                         className="w-full"
                         rows={5}
                     />
                     <TextField
                         label="Message 2"
+                        name="landing_message2"
                         placeholder="Message 2 Text"
-                        value={message2}
-                        onChange={(e) => setMessage2(e.target.value)}
+                        value={landingPageData.landing_message2}
+                        onChange={handleLandingChange}
                         className="w-full"
                         rows={5}
                     />
                     <TextInput
                         label="Button Text"
                         type="text"
+                        name="landing_button_text"
                         placeholder="Button Text"
-                        value={buttonText}
-                        onChange={(e) => setButtonText(e.target.value)}
+                        value={landingPageData.landing_button_text}
+                        onChange={handleLandingChange}
                         required
                         className="w-full"
                     />
@@ -128,14 +211,7 @@ function LandingPage() {
                     <h3>Preview</h3>
                     <div className="bg-[#F8F9FA] w-[360px] h-[600px] md:w-[600px] md:h-[360px] rounded-xl drop-shadow-md overflow-hidden relative">
                         <div className="absolute top-0 left-0 w-[514px] h-[857px] md:w-[857px] md:h-[514px] px-8 origin-top-left scale-[0.7]">
-                            <PhishingPage
-                                previewTemplate={{
-                                    title,
-                                    message1,
-                                    message2,
-                                    buttonText,
-                                }}
-                            />
+                            <PhishingPage previewTemplate={landingPageData} />
                         </div>
                     </div>
                 </div>

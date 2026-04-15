@@ -4,10 +4,12 @@ import { apiService } from '../services/userService' // Added import
 import type { Landing } from '../types/models'
 
 interface TemplateProps {
-    title: string
-    message1: string
-    message2: string
-    buttonText: string
+    landing_title: string
+    landing_message1: string
+    landing_message2?: string
+    landing_button_text: string
+    logo_url?: string
+    updated_at?: string
 }
 
 function PhishingPage({
@@ -19,17 +21,14 @@ function PhishingPage({
     const [isLoading, setIsLoading] = useState(!previewTemplate)
 
     useEffect(() => {
-        // If we are just previewing in admin, skip saving a token
         if (previewTemplate) return
 
         localStorage.removeItem('access_token')
         localStorage.removeItem('refresh_token')
 
-        // Extract the token from the URL query string
         const queryParams = new URLSearchParams(window.location.search)
         const token = queryParams.get('token')
 
-        // If a token was found in the URL, save it to localStorage
         if (token) {
             localStorage.setItem('lms_token', token)
             // Optional: You could even remove it from the URL here so the user doesn't copy/share it
@@ -38,28 +37,31 @@ function PhishingPage({
     }, [previewTemplate])
 
     useEffect(() => {
-        // If we are just previewing it in the admin panel, don't fetch from DB
         if (previewTemplate) return
 
         const fetchTemplate = async () => {
             try {
                 const data = await apiService.getSingleton<Landing>('settings')
                 setTemplate({
-                    title: data.landing_title,
-                    message1: data.landing_message1,
-                    message2: data.landing_message2,
-                    buttonText: data.landing_button_text,
+                    landing_title: data.landing_title,
+                    landing_message1: data.landing_message1,
+                    landing_message2: data.landing_message2,
+                    landing_button_text: data.landing_button_text,
+                    logo_url: data.logo_url,
+                    updated_at: data.updated_at || new Date().toLocaleString(),
                 })
             } catch (err) {
                 console.error('Failed to fetch phishing template', err)
-                // Safe fallback in case the API is down
+
                 setTemplate({
-                    title: 'Wait! This was a Phishing Simulation',
-                    message1:
+                    landing_title: 'Wait! This was a Phishing Simulation',
+                    landing_message1:
                         "Don't worry, your data is safe. However, a real attacker could have used that link to access your personal details, address, and credit information.",
-                    message2:
+                    landing_message2:
                         'Your security is a priority. Please follow the link below to complete your required phishing awareness module.',
-                    buttonText: 'Go to Training Portal',
+                    landing_button_text: 'Go to Training Portal',
+                    logo_url: '',
+                    updated_at: new Date().toLocaleString(),
                 })
             } finally {
                 setIsLoading(false)
@@ -70,7 +72,7 @@ function PhishingPage({
     }, [previewTemplate])
 
     const handleNavigate = () => {
-        window.location.href = '/home' // Update to your actual training portal URL
+        window.location.href = '/home'
     }
 
     const displayTemplate = previewTemplate || template
@@ -89,13 +91,20 @@ function PhishingPage({
                 previewTemplate ? 'h-full' : 'h-screen'
             }`}
         >
-            <h1>{displayTemplate.title}</h1>
-            <p>{displayTemplate.message1}</p>
-            {displayTemplate.message2 && (
-                <p className="text-sm">{displayTemplate.message2}</p>
+            {displayTemplate.logo_url && (
+                <img
+                    src={displayTemplate.logo_url}
+                    alt="Logo"
+                    className="max-h-24 object-contain"
+                />
+            )}
+            <h1>{displayTemplate.landing_title}</h1>
+            <p>{displayTemplate.landing_message1}</p>
+            {displayTemplate.landing_message2 && (
+                <p className="text-sm">{displayTemplate.landing_message2}</p>
             )}
             <DefaultButton
-                children={displayTemplate.buttonText}
+                children={displayTemplate.landing_button_text}
                 onClick={handleNavigate}
                 className="text-[#FFFAFA] bg-[#024C89] hover:bg-[#3572A1]"
             />
