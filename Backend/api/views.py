@@ -228,6 +228,24 @@ class EmailTemplateViewSet(viewsets.ModelViewSet):
             'detail': 'Signature image uploaded successfully.',
             'signature_image_url': serializer.data.get('signature_image_url')
         })
+    
+    @action(
+        detail=True,
+        methods=['delete'],
+        url_path='delete-signature',
+    )
+    def delete_signature(self, request, pk=None):
+        template = self.get_object()
+        
+        if not template.signature_image:
+            return Response({'detail': 'No signature image to delete.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Remove the file reference from the model
+        template.signature_image.delete(save=False) # Delete the physical file
+        template.signature_image = None
+        template.save(update_fields=['signature_image'])
+
+        return Response({'detail': 'Signature image deleted successfully.'}, status=status.HTTP_204_NO_CONTENT)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1433,7 +1451,6 @@ class PlatformSettingsView(APIView):
 class PlatformLogoUploadView(APIView):
     """
     Dedicated endpoint for uploading the platform logo.
-    Matches the logic used in CourseViewSet.upload_thumbnail().
     """
     parser_classes = [MultiPartParser, FormParser]
     permission_classes = [IsAdminRole] 
@@ -1487,6 +1504,23 @@ class PlatformLogoUploadView(APIView):
                 {'error': f'Failed to save logo: {str(e)}'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+        
+    def delete(self, request, *args, **kwargs):
+        """
+        Deletes the platform logo.
+        DELETE /api/v1/settings/logo/upload/ (or whatever your URL is)
+        """
+        settings_obj = PlatformSettings.get()
+        
+        if not settings_obj.logo:
+            return Response({'detail': 'No logo to delete.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Physical deletion and field nullification
+        settings_obj.logo.delete(save=False)
+        settings_obj.logo = None
+        settings_obj.save(update_fields=['logo'])
+
+        return Response({'detail': 'Platform logo deleted successfully.'}, status=status.HTTP_204_NO_CONTENT)
 
 class ReminderSMTPSettingsView(APIView):
     """
