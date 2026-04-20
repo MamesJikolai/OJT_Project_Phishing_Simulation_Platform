@@ -38,7 +38,7 @@ function EmailTemplateCard({
                             <p className="font-bold">{item.subject}</p>
                             <br />
                             <div
-                                className="whitespace-pre-wrap prose prose-sm max-w-none"
+                                className="prose prose-sm max-w-none"
                                 dangerouslySetInnerHTML={{
                                     __html: DOMPurify.sanitize(item.body_html),
                                 }}

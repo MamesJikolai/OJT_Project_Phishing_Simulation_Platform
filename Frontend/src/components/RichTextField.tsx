@@ -162,52 +162,86 @@ const MenuBar = ({ editor }: { editor: any }) => {
             })}
 
             <div className="w-[1px] h-5 bg-[#DDE2E5] mx-1"></div>
-            <div className="flex items-center gap-1 text-sm text-[#4A4A4A]">
-                <label
-                    className="flex items-center gap-1 cursor-pointer hover:bg-[#DDE2E5] p-1 rounded"
-                    title="Text Color"
-                >
-                    <span className="material-symbols-outlined text-[20px]">
-                        format_color_text
-                    </span>
-                    <input
-                        type="color"
-                        onInput={(event: any) =>
-                            editor
-                                .chain()
-                                .focus()
-                                .setColor(event.target.value)
-                                .run()
+            <div className="flex items-center gap-3 text-sm text-[#4A4A4A]">
+                {/* --- Text Color Controls --- */}
+                <div className="flex items-center">
+                    <label
+                        className="flex items-center gap-1 cursor-pointer hover:bg-[#DDE2E5] p-1 rounded-l"
+                        title="Text Color"
+                    >
+                        <span className="material-symbols-outlined text-[20px]">
+                            format_color_text
+                        </span>
+                        <input
+                            type="color"
+                            onInput={(event: any) =>
+                                editor
+                                    .chain()
+                                    .focus()
+                                    .setColor(event.target.value)
+                                    .run()
+                            }
+                            value={
+                                editor.getAttributes('textStyle').color ||
+                                '#000000'
+                            }
+                            className="w-5 h-5 p-0 border-0 rounded cursor-pointer"
+                        />
+                    </label>
+                    {/* Clear Text Color Button */}
+                    <button
+                        type="button"
+                        onClick={() =>
+                            editor.chain().focus().unsetColor().run()
                         }
-                        value={
-                            editor.getAttributes('textStyle').color || '#000000'
+                        className="flex items-center hover:bg-[#DDE2E5] p-1 rounded-r cursor-pointer"
+                        title="Remove Text Color"
+                    >
+                        <span className="material-symbols-outlined text-[20px]">
+                            format_color_reset
+                        </span>
+                    </button>
+                </div>
+
+                {/* --- Highlight Color Controls --- */}
+                <div className="flex items-center">
+                    <label
+                        className="flex items-center gap-1 cursor-pointer hover:bg-[#DDE2E5] p-1 rounded-l"
+                        title="Highlight Color"
+                    >
+                        <span className="material-symbols-outlined text-[20px]">
+                            format_ink_highlighter
+                        </span>
+                        <input
+                            type="color"
+                            onInput={(event: any) =>
+                                editor
+                                    .chain()
+                                    .focus()
+                                    .setHighlight({ color: event.target.value })
+                                    .run()
+                            }
+                            value={
+                                editor.getAttributes('highlight').color ||
+                                '#ffffff'
+                            }
+                            className="w-5 h-5 p-0 border-0 rounded cursor-pointer"
+                        />
+                    </label>
+                    {/* Clear Highlight Button */}
+                    <button
+                        type="button"
+                        onClick={() =>
+                            editor.chain().focus().unsetHighlight().run()
                         }
-                        className="w-5 h-5 p-0 border-0 rounded cursor-pointer"
-                    />
-                </label>
-                <label
-                    className="flex items-center gap-1 cursor-pointer hover:bg-[#DDE2E5] p-1 rounded"
-                    title="Highlight Color"
-                >
-                    <span className="material-symbols-outlined text-[20px]">
-                        format_ink_highlighter
-                    </span>
-                    <input
-                        type="color"
-                        onInput={(event: any) =>
-                            editor
-                                .chain()
-                                .focus()
-                                // Use setHighlight and pass the color inside an object
-                                .setHighlight({ color: event.target.value })
-                                .run()
-                        }
-                        value={
-                            editor.getAttributes('highlight').color || '#ffffff'
-                        }
-                        className="w-5 h-5 p-0 border-0 rounded cursor-pointer"
-                    />
-                </label>
+                        className="flex items-center hover:bg-[#DDE2E5] p-1 rounded-r cursor-pointer"
+                        title="Remove Highlight"
+                    >
+                        <span className="material-symbols-outlined text-[20px]">
+                            ink_eraser
+                        </span>
+                    </button>
+                </div>
             </div>
         </div>
     )
@@ -242,15 +276,11 @@ function RichTextField({
         content: value,
         editorProps: {
             attributes: {
-                class: 'prose max-w-none focus:outline-none min-h-[150px] p-3 text-[#4A4A4A]',
+                class: 'prose prose-p:my-1 max-w-none focus:outline-none min-h-[150px] p-3 text-[#4A4A4A]',
             },
         },
         onUpdate: ({ editor }) => {
-            let html = editor.getHTML()
-
-            html = html.replace(/<p>\s*<\/p>/g, '<p><br></p>')
-
-            onChange(html)
+            onChange(editor.getHTML())
         },
     })
 

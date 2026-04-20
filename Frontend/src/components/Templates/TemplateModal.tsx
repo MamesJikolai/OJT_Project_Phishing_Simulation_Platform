@@ -81,7 +81,12 @@ function TemplateModal({
             return
         }
 
-        onSave(emailTemplateData, signatureFile)
+        const finalHtml = emailTemplateData.body_html.replace(
+            /<p>\s*<\/p>/g,
+            '<p><br></p>'
+        )
+
+        onSave({ ...emailTemplateData, body_html: finalHtml }, signatureFile)
         onClose()
     }
 
